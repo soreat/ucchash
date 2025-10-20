@@ -1,58 +1,67 @@
 <!DOCTYPE html>
-
-<!-- 
-  To change the theme, change the class on the html tag below to one of:
-  - theme-auto: Automatically switches based on user's system preferences
-  - theme-light: Forces light theme
-  - theme-dark: Forces dark theme
--->
-
-<html class="theme-auto" lang="en">
-    <!-- Update`class="theme-auto" with your preference -->
-
+<html lang="en">
     <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        <!-- Page Title - Change this to your name/brand (50-60 characters recommended) -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Md. Soreatullah</title>
-        <link rel="icon" type="image/x-icon" href="/images/profile.jpg" />
-        <!-- Update this with your own favicon -->
-
-        <!-- Meta Description - Write a description (150-160 characters recommended) -->
-        <meta
-            name="description"
-            content="Discover the exciting field of Civil Engineering at BUET (Bangladesh University of Engineering and Technology). Learn about the curriculum, faculty, research opportunities, and student life at one of the top engineering universities in Bangladesh."
-        />
-
-        <!-- Keywords -->
-        <meta
-            name="keywords"
-            content="Md. Soreatullah, BUET, Bangladesh University of Engineering and Technology, Civil Engineering, soreat26"
-        />
-        <style></style>
-    </head>
-
-    <body>
-        <iframe
-            src="https://glaze-carriage-e8d.notion.site/ebd/2927a4bc45fa80e7a2b8e16ff803d09b"
-            frameborder="0"
-            style="
-                overflow: hidden;
-                overflow-x: hidden;
-                overflow-y: hidden;
+        <style>
+            body,
+            html {
+                margin: 0;
                 height: 100%;
+                overflow: hidden;
+            }
+
+            .iframe-container {
+                position: relative;
                 width: 100%;
+                height: 100vh;
+            }
+
+            iframe {
                 position: absolute;
-                top: 0px;
-                left: 0px;
-                right: 0px;
-                bottom: 0px;
-            "
-            height="100%"
-            width="100%"
-            allowfullscreen
-        ></iframe>
-        <footer></footer>
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+
+            /* Cover only the right half of the top bar */
+            .top-bar-cover {
+                position: absolute;
+                top: 0;
+                right: 0; /* start from right edge */
+                width: 60%; /* covers the right half only */
+                height: 60px; /* adjust until it perfectly hides Notion’s top bar */
+                background-color: #191919;
+                z-index: 10;
+            }
+
+            /* Optional: bottom bar if you still want it */
+            .bottom-bar-cover {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 50px;
+                background-color: black;
+                z-index: 10;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="iframe-container">
+            <iframe
+                src="https://glaze-carriage-e8d.notion.site/ebd/2927a4bc45fa80e7a2b8e16ff803d09b"
+                allowfullscreen
+            ></iframe>
+
+            <!-- Only covers right half of the top bar -->
+            <div class="top-bar-cover"></div>
+
+            <!-- Optional bottom cover -->
+            <div class="bottom-bar-cover"></div>
+        </div>
     </body>
 </html>
