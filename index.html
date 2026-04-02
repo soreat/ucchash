@@ -83,14 +83,9 @@
         </style>
     </head>
     <body class="antialiased">
-        <!-- Chosen Palette: Warm Neutrals with Indigo and Amber Accents -->
-        <!-- Application Structure Plan: The application uses a dashboard structure optimized for students and educators. It starts with a Paper Selection toggle at the top to switch between 1st and 2nd Paper contexts. Below that, an overall statistical summary (Overview) shows the big picture of 'G' and 'Gh' question distributions for the selected paper. This is followed by a 'Chapter-wise Drilldown' section, allowing users to select specific chapters and instantly visualize the most tested topics via an interactive bar chart and a detailed data table. A new Year Filter has been added to the table header to dynamically parse and filter the board string logic. Finally, a 'Priority Filter' section provides a quick way to list topics based on their star ratings (importance), helping students prioritize their study plans effectively. This structure moves logically from macro to micro analysis while handling multiple data sets smoothly. -->
-        <!-- Visualization & Content Choices: 1. Paper Toggle -> Goal: Context switching -> Viz: Styled HTML Buttons + JS state management. 2. Overview Pie Chart -> Goal: Inform proportions -> Viz: Doughnut (Chart.js) -> Shows ratio of 'G' (application) vs 'Gh' (higher-order) questions across the selected syllabus. 3. Chapter Bar Chart -> Goal: Compare topic frequency -> Viz: Grouped Bar Chart (Chart.js) -> Clearly contrasts 'G' and 'Gh' question counts per topic within a selected chapter. 4. Year String Filter -> Goal: Deep drill-down -> Viz: JS string matching + Interactive Pills -> Extracts specific years from complex combined strings. 5. Priority Table -> Goal: Organize by importance -> Viz: HTML Table with JS filtering -> Allows students to focus only on top-tier topics globally per paper. -->
-        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
         <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-50">
             <div
-                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-row flex-wrap justify-between items-center gap-4"
+                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 flex flex-row flex-wrap justify-between items-center gap-1"
             >
                 <h1
                     class="text-2xl md:text-3xl font-bold tracking-tight whitespace-nowrap"
@@ -207,6 +202,7 @@
                     টপিকগুলোর বিস্তারিত বোর্ড ও সালের তথ্য দেওয়া আছে।
                 </p>
 
+                <!-- TOP CHAPTER BUTTONS -->
                 <div class="mb-6">
                     <p
                         class="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider"
@@ -229,6 +225,21 @@
                     </h3>
                     <div class="chart-container">
                         <canvas id="chapterBarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- BOTTOM CHAPTER BUTTONS -->
+                <div class="mb-6">
+                    <p
+                        class="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider"
+                    >
+                        অধ্যায় নির্বাচন করুন:
+                    </p>
+                    <div
+                        class="flex flex-wrap gap-2"
+                        id="chapter-buttons-bottom"
+                    >
+                        <!-- Buttons will be generated here -->
                     </div>
                 </div>
 
@@ -853,7 +864,7 @@
                                 starStr: "★★★",
                                 g: 6,
                                 gh: 8,
-                                boards: "ব. বো. ১৯, ১৭, ১৬, ১৫; সি. বো. ১৯, ১৬; সম্মিলিত বো. ১৮; রা. বো. ১৫; চ. বো. ১৫",
+                                boards: "ব. বো. ১৯, ১৭, ১৬, ১৫; সি. বো. ১৯, ১৬; সম্মিলিত বো. ১৮; রা. বো. ۱۵; চ. বো. ১৫",
                             },
                             {
                                 name: "তরঙ্গের বিভিন্ন রাশি",
@@ -1562,30 +1573,47 @@
             }
 
             function createChapterButtons() {
-                const container = document.getElementById("chapter-buttons");
-                container.innerHTML = "";
+                const containerTop = document.getElementById("chapter-buttons");
+                const containerBottom = document.getElementById(
+                    "chapter-buttons-bottom",
+                );
+
+                containerTop.innerHTML = "";
+                containerBottom.innerHTML = "";
+
                 rawData.forEach((chapter, index) => {
-                    const btn = document.createElement("button");
                     const shortName = chapter.chapter.split(":")[0];
-                    btn.className = `tab-btn px-4 py-2 border border-slate-300 rounded-full text-sm font-medium ${index === 0 ? "active" : "text-slate-600 hover:bg-slate-100"}`;
-                    btn.innerText = shortName;
-                    btn.onclick = () => {
-                        document.querySelectorAll(".tab-btn").forEach((b) => {
-                            b.classList.remove("active");
-                            b.classList.add(
-                                "text-slate-600",
-                                "hover:bg-slate-100",
-                            );
-                        });
-                        btn.classList.add("active");
-                        btn.classList.remove(
-                            "text-slate-600",
-                            "hover:bg-slate-100",
-                        );
-                        loadChapterData(index);
-                    };
-                    container.appendChild(btn);
+
+                    // Create top button
+                    const btnTop = document.createElement("button");
+                    btnTop.className = `tab-btn tab-btn-${index} px-4 py-2 border border-slate-300 rounded-full text-sm font-medium ${index === 0 ? "active" : "text-slate-600 hover:bg-slate-100"}`;
+                    btnTop.innerText = shortName;
+                    btnTop.onclick = () => handleChapterClick(index);
+                    containerTop.appendChild(btnTop);
+
+                    // Create bottom button
+                    const btnBottom = document.createElement("button");
+                    btnBottom.className = `tab-btn tab-btn-${index} px-4 py-2 border border-slate-300 rounded-full text-sm font-medium ${index === 0 ? "active" : "text-slate-600 hover:bg-slate-100"}`;
+                    btnBottom.innerText = shortName;
+                    btnBottom.onclick = () => handleChapterClick(index);
+                    containerBottom.appendChild(btnBottom);
                 });
+            }
+
+            function handleChapterClick(index) {
+                // Remove active class from all buttons in both groups
+                document.querySelectorAll(".tab-btn").forEach((b) => {
+                    b.classList.remove("active");
+                    b.classList.add("text-slate-600", "hover:bg-slate-100");
+                });
+
+                // Add active class to the selected chapter's buttons in both groups
+                document.querySelectorAll(`.tab-btn-${index}`).forEach((b) => {
+                    b.classList.add("active");
+                    b.classList.remove("text-slate-600", "hover:bg-slate-100");
+                });
+
+                loadChapterData(index);
             }
 
             function loadChapterData(index) {
