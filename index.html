@@ -85,7 +85,7 @@
     <body class="antialiased">
         <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-50">
             <div
-                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 flex flex-row flex-wrap justify-between items-center gap-1"
+                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 flex flex-row flex-wrap justify-between items-center gap-2"
             >
                 <h1
                     class="text-2xl md:text-3xl font-bold tracking-tight whitespace-nowrap"
@@ -101,10 +101,18 @@
                     <span class="inline">PHYSICS</span>
                 </h1>
 
-                <div
-                    class="text-sm bg-indigo-800 px-3 py-1 rounded-full border border-indigo-400"
-                >
-                    এইচএসসি প্রস্তুতি
+                <div class="flex items-center gap-2">
+                    <div
+                        class="text-sm bg-indigo-800 px-3 py-1 rounded-full border border-indigo-400 hidden sm:block"
+                    >
+                        এইচএসসি প্রস্তুতি
+                    </div>
+                    <button
+                        onclick="scrollToNextSection()"
+                        class="bg-amber-400 hover:bg-amber-300 text-indigo-900 px-3 py-1 rounded-full text-sm font-bold shadow transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap"
+                    >
+                        🞃
+                    </button>
                 </div>
             </div>
         </header>
@@ -134,7 +142,8 @@
                 class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
             >
                 <h2
-                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2"
+                    id="section-overview"
+                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2 scroll-mt-24"
                 >
                     সার্বিক প্রশ্ন বন্টন (Overview)
                 </h2>
@@ -191,7 +200,8 @@
                 class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
             >
                 <h2
-                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2"
+                    id="section-chapter"
+                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2 scroll-mt-24"
                 >
                     অধ্যায়ভিত্তিক বিশ্লেষণ (Chapter Analysis)
                 </h2>
@@ -229,7 +239,7 @@
                 </div>
 
                 <!-- BOTTOM CHAPTER BUTTONS -->
-                <div class="mb-6">
+                <div id="section-chapter-bottom" class="mb-6 scroll-mt-24">
                     <p
                         class="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider"
                     >
@@ -366,7 +376,8 @@
                 class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
             >
                 <h2
-                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2"
+                    id="section-priority"
+                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2 scroll-mt-24"
                 >
                     গুরুত্ব অনুযায়ী টপিক (Priority Filter)
                 </h2>
@@ -1383,6 +1394,45 @@
                 updateDashboard();
                 setupFilterListeners();
                 setupYearFilters();
+            }
+
+            // Scroll Sequence Logic
+            const scrollTargets = [
+                "section-overview",
+                "section-chapter",
+                "section-chapter-bottom",
+                "section-priority",
+            ];
+
+            function scrollToNextSection() {
+                const headerOffset = 70; // Approximation of fixed header height
+                let nextTargetId = scrollTargets[0]; // Default to the first section
+
+                // Find the first target that is currently below the viewport's top edge
+                for (let i = 0; i < scrollTargets.length; i++) {
+                    const el = document.getElementById(scrollTargets[i]);
+                    if (el) {
+                        const rect = el.getBoundingClientRect();
+                        // If element is below the sticky header (plus a small buffer)
+                        if (rect.top > headerOffset + 5) {
+                            nextTargetId = scrollTargets[i];
+                            break;
+                        }
+                    }
+                }
+
+                const targetEl = document.getElementById(nextTargetId);
+                if (targetEl) {
+                    const elementPosition =
+                        targetEl.getBoundingClientRect().top;
+                    const offsetPosition =
+                        elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth",
+                    });
+                }
             }
 
             function switchPaper(paperKey) {
