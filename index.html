@@ -1,716 +1,1742 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>এইচএসসি পদার্থবিজ্ঞান - প্রশ্ন বিশ্লেষণ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Hind Siliguri', sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>উচ্ছ্বাস HSC পদার্থবিজ্ঞান - প্রশ্ন বিশ্লেষণ</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap");
+            @font-face {
+                font-family: "HooglyMJ Bold";
+                src: url("fonts/HooglyMJ Bold.woff2") format("truetype");
+                font-weight: normal;
+                font-style: normal;
+            }
+            body {
+                font-family: "Noto Sans Bengali", sans-serif;
+                background-color: #f8fafc;
+                color: #334155;
+            }
 
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 350px;
-            max-height: 400px;
-            padding: 1rem;
-            background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-
-        @media (max-width: 640px) {
             .chart-container {
-                height: 250px;
-                max-height: 300px;
+                position: relative;
+                width: 100%;
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+                height: 350px;
+                max-height: 400px;
+                padding: 1rem;
+                background: white;
+                border-radius: 0.75rem;
+                box-shadow:
+                    0 4px 6px -1px rgb(0 0 0 / 0.1),
+                    0 2px 4px -2px rgb(0 0 0 / 0.1);
             }
-        }
 
-        .paper-btn {
-            transition: all 0.3s ease;
-            background-color: white;
-            color: #4f46e5;
-            border: 2px solid #4f46e5;
-        }
-        
-        .paper-btn.active {
-            background-color: #4f46e5;
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4);
-        }
+            @media (max-width: 640px) {
+                .chart-container {
+                    height: 250px;
+                    max-height: 300px;
+                }
+            }
 
-        .tab-btn {
-            transition: all 0.2s ease-in-out;
-        }
-        
-        .tab-btn.active {
-            background-color: #4338ca;
-            color: white;
-            border-color: #4338ca;
-        }
+            .paper-btn {
+                transition: all 0.3s ease;
+                background-color: white;
+                color: #4f46e5;
+                border: 2px solid #4f46e5;
+            }
 
-        .star-filter-btn.active {
-            background-color: #fbbf24;
-            color: #78350f;
-            border-color: #fbbf24;
-            font-weight: bold;
-        }
+            .paper-btn.active {
+                background-color: #4f46e5;
+                color: white;
+                box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4);
+            }
 
-        .year-filter-btn {
-            transition: all 0.2s ease-in-out;
-        }
-        
-        .hide {
-            display: none;
-        }
-    </style>
-</head>
-<body class="antialiased">
+            .tab-btn {
+                transition: all 0.2s ease-in-out;
+            }
 
-    <!-- Chosen Palette: Warm Neutrals with Indigo and Amber Accents -->
-    <!-- Application Structure Plan: The application uses a dashboard structure optimized for students and educators. It starts with a Paper Selection toggle at the top to switch between 1st and 2nd Paper contexts. Below that, an overall statistical summary (Overview) shows the big picture of 'G' and 'Gh' question distributions for the selected paper. This is followed by a 'Chapter-wise Drilldown' section, allowing users to select specific chapters and instantly visualize the most tested topics via an interactive bar chart and a detailed data table. A new Year Filter has been added to the table header to dynamically parse and filter the board string logic. Finally, a 'Priority Filter' section provides a quick way to list topics based on their star ratings (importance), helping students prioritize their study plans effectively. This structure moves logically from macro to micro analysis while handling multiple data sets smoothly. -->
-    <!-- Visualization & Content Choices: 1. Paper Toggle -> Goal: Context switching -> Viz: Styled HTML Buttons + JS state management. 2. Overview Pie Chart -> Goal: Inform proportions -> Viz: Doughnut (Chart.js) -> Shows ratio of 'G' (application) vs 'Gh' (higher-order) questions across the selected syllabus. 3. Chapter Bar Chart -> Goal: Compare topic frequency -> Viz: Grouped Bar Chart (Chart.js) -> Clearly contrasts 'G' and 'Gh' question counts per topic within a selected chapter. 4. Year String Filter -> Goal: Deep drill-down -> Viz: JS string matching + Interactive Pills -> Extracts specific years from complex combined strings. 5. Priority Table -> Goal: Organize by importance -> Viz: HTML Table with JS filtering -> Allows students to focus only on top-tier topics globally per paper. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+            .tab-btn.active {
+                background-color: #4338ca;
+                color: white;
+                border-color: #4338ca;
+            }
 
-    <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">পদার্থবিজ্ঞান বোর্ড প্রশ্ন বিশ্লেষণ</h1>
-            <div class="text-sm bg-indigo-800 px-3 py-1 rounded-full border border-indigo-400">
-                এইচএসসি প্রস্তুতি
+            .star-filter-btn.active {
+                background-color: #fbbf24;
+                color: #78350f;
+                border-color: #fbbf24;
+                font-weight: bold;
+            }
+
+            .year-filter-btn {
+                transition: all 0.2s ease-in-out;
+            }
+
+            .hide {
+                display: none;
+            }
+        </style>
+    </head>
+    <body class="antialiased">
+        <!-- Chosen Palette: Warm Neutrals with Indigo and Amber Accents -->
+        <!-- Application Structure Plan: The application uses a dashboard structure optimized for students and educators. It starts with a Paper Selection toggle at the top to switch between 1st and 2nd Paper contexts. Below that, an overall statistical summary (Overview) shows the big picture of 'G' and 'Gh' question distributions for the selected paper. This is followed by a 'Chapter-wise Drilldown' section, allowing users to select specific chapters and instantly visualize the most tested topics via an interactive bar chart and a detailed data table. A new Year Filter has been added to the table header to dynamically parse and filter the board string logic. Finally, a 'Priority Filter' section provides a quick way to list topics based on their star ratings (importance), helping students prioritize their study plans effectively. This structure moves logically from macro to micro analysis while handling multiple data sets smoothly. -->
+        <!-- Visualization & Content Choices: 1. Paper Toggle -> Goal: Context switching -> Viz: Styled HTML Buttons + JS state management. 2. Overview Pie Chart -> Goal: Inform proportions -> Viz: Doughnut (Chart.js) -> Shows ratio of 'G' (application) vs 'Gh' (higher-order) questions across the selected syllabus. 3. Chapter Bar Chart -> Goal: Compare topic frequency -> Viz: Grouped Bar Chart (Chart.js) -> Clearly contrasts 'G' and 'Gh' question counts per topic within a selected chapter. 4. Year String Filter -> Goal: Deep drill-down -> Viz: JS string matching + Interactive Pills -> Extracts specific years from complex combined strings. 5. Priority Table -> Goal: Organize by importance -> Viz: HTML Table with JS filtering -> Allows students to focus only on top-tier topics globally per paper. -->
+        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+        <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-50">
+            <div
+                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-row flex-wrap justify-between items-center gap-4"
+            >
+                <h1
+                    class="text-2xl md:text-3xl font-bold tracking-tight whitespace-nowrap"
+                >
+                    <span
+                        class="text-4xl md:text-5xl inline"
+                        style="
+                            font-family: &quot;HooglyMJ Bold&quot;, sans-serif;
+                        "
+                    >
+                        D”Q¡vm
+                    </span>
+                    <span class="inline">PHYSICS</span>
+                </h1>
+
+                <div
+                    class="text-sm bg-indigo-800 px-3 py-1 rounded-full border border-indigo-400"
+                >
+                    এইচএসসি প্রস্তুতি
+                </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+            <!-- Paper Selection -->
+            <div
+                class="flex justify-center gap-4 border-b border-slate-200 pb-8"
+            >
+                <button
+                    id="btn-paper1"
+                    class="paper-btn active px-8 py-3 rounded-lg font-bold text-lg cursor-pointer"
+                    onclick="switchPaper('paper1')"
+                >
+                    ১ম পত্র
+                </button>
+                <button
+                    id="btn-paper2"
+                    class="paper-btn px-8 py-3 rounded-lg font-bold text-lg cursor-pointer"
+                    onclick="switchPaper('paper2')"
+                >
+                    ২য় পত্র
+                </button>
+            </div>
 
-        <!-- Paper Selection -->
-        <div class="flex justify-center gap-4 border-b border-slate-200 pb-8">
-            <button id="btn-paper1" class="paper-btn active px-8 py-3 rounded-lg font-bold text-lg cursor-pointer" onclick="switchPaper('paper1')">১ম পত্র</button>
-            <button id="btn-paper2" class="paper-btn px-8 py-3 rounded-lg font-bold text-lg cursor-pointer" onclick="switchPaper('paper2')">২য় পত্র</button>
-        </div>
+            <section
+                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
+            >
+                <h2
+                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2"
+                >
+                    সার্বিক প্রশ্ন বন্টন (Overview)
+                </h2>
+                <p class="text-slate-600 mb-6 text-lg leading-relaxed">
+                    এই অংশে নির্বাচিত পত্রের সিলেবাসের উপর বিগত বছরগুলোতে আসা
+                    সৃজনশীল প্রশ্নের 'গ' (প্রয়োগমূলক) এবং 'ঘ' (উচ্চতর দক্ষতা)
+                    অংশের একটি তুলনামূলক চিত্র তুলে ধরা হয়েছে। এর মাধ্যমে আপনি
+                    বুঝতে পারবেন বোর্ড পরীক্ষায় কোন ধরনের প্রশ্ন বেশি ফোকাস করা
+                    হয়।
+                </p>
 
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
-            <h2 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2">সার্বিক প্রশ্ন বন্টন (Overview)</h2>
-            <p class="text-slate-600 mb-6 text-lg leading-relaxed">
-                এই অংশে নির্বাচিত পত্রের সিলেবাসের উপর বিগত বছরগুলোতে আসা সৃজনশীল প্রশ্নের 'গ' (প্রয়োগমূলক) এবং 'ঘ' (উচ্চতর দক্ষতা) অংশের একটি তুলনামূলক চিত্র তুলে ধরা হয়েছে। এর মাধ্যমে আপনি বুঝতে পারবেন বোর্ড পরীক্ষায় কোন ধরনের প্রশ্ন বেশি ফোকাস করা হয়।
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div class="space-y-6">
-                    <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-100 flex items-center justify-between transition-all hover:shadow-md">
-                        <div>
-                            <p class="text-sm text-indigo-600 font-semibold uppercase tracking-wide">সর্বমোট 'গ' প্রশ্ন</p>
-                            <p class="text-4xl font-bold text-indigo-900 mt-1" id="total-g-stat">0</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-6">
+                        <div
+                            class="bg-indigo-50 p-6 rounded-lg border border-indigo-100 flex items-center justify-between transition-all hover:shadow-md"
+                        >
+                            <div>
+                                <p
+                                    class="text-sm text-indigo-600 font-semibold uppercase tracking-wide"
+                                >
+                                    সর্বমোট 'গ' প্রশ্ন
+                                </p>
+                                <p
+                                    class="text-4xl font-bold text-indigo-900 mt-1"
+                                    id="total-g-stat"
+                                >
+                                    0
+                                </p>
+                            </div>
+                            <div class="text-4xl">📊</div>
                         </div>
-                        <div class="text-4xl">📊</div>
-                    </div>
-                    <div class="bg-amber-50 p-6 rounded-lg border border-amber-100 flex items-center justify-between transition-all hover:shadow-md">
-                        <div>
-                            <p class="text-sm text-amber-700 font-semibold uppercase tracking-wide">সর্বমোট 'ঘ' প্রশ্ন</p>
-                            <p class="text-4xl font-bold text-amber-900 mt-1" id="total-gh-stat">0</p>
+                        <div
+                            class="bg-amber-50 p-6 rounded-lg border border-amber-100 flex items-center justify-between transition-all hover:shadow-md"
+                        >
+                            <div>
+                                <p
+                                    class="text-sm text-amber-700 font-semibold uppercase tracking-wide"
+                                >
+                                    সর্বমোট 'ঘ' প্রশ্ন
+                                </p>
+                                <p
+                                    class="text-4xl font-bold text-amber-900 mt-1"
+                                    id="total-gh-stat"
+                                >
+                                    0
+                                </p>
+                            </div>
+                            <div class="text-4xl">📈</div>
                         </div>
-                        <div class="text-4xl">📈</div>
+                    </div>
+
+                    <div
+                        class="chart-container h-64 md:h-80 w-full max-w-sm mx-auto"
+                    >
+                        <canvas id="overviewChart"></canvas>
                     </div>
                 </div>
-                
-                <div class="chart-container h-64 md:h-80 w-full max-w-sm mx-auto">
-                    <canvas id="overviewChart"></canvas>
+            </section>
+
+            <section
+                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
+            >
+                <h2
+                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2"
+                >
+                    অধ্যায়ভিত্তিক বিশ্লেষণ (Chapter Analysis)
+                </h2>
+                <p class="text-slate-600 mb-6 text-lg leading-relaxed">
+                    নিচের বাটনগুলো থেকে যেকোনো একটি অধ্যায় নির্বাচন করুন।
+                    গ্রাফের মাধ্যমে ওই অধ্যায়ের কোন টপিক থেকে সবচেয়ে বেশি
+                    প্রশ্ন এসেছে তা দেখতে পাবেন। এছাড়া নিচের টেবিলে ওই
+                    টপিকগুলোর বিস্তারিত বোর্ড ও সালের তথ্য দেওয়া আছে।
+                </p>
+
+                <div class="mb-6">
+                    <p
+                        class="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider"
+                    >
+                        অধ্যায় নির্বাচন করুন:
+                    </p>
+                    <div class="flex flex-wrap gap-2" id="chapter-buttons">
+                        <!-- Buttons will be generated here -->
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
-            <h2 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2">অধ্যায়ভিত্তিক বিশ্লেষণ (Chapter Analysis)</h2>
-            <p class="text-slate-600 mb-6 text-lg leading-relaxed">
-                নিচের বাটনগুলো থেকে যেকোনো একটি অধ্যায় নির্বাচন করুন। গ্রাফের মাধ্যমে ওই অধ্যায়ের কোন টপিক থেকে সবচেয়ে বেশি প্রশ্ন এসেছে তা দেখতে পাবেন। এছাড়া নিচের টেবিলে ওই টপিকগুলোর বিস্তারিত বোর্ড ও সালের তথ্য দেওয়া আছে।
-            </p>
-
-            <div class="mb-6">
-                <p class="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider">অধ্যায় নির্বাচন করুন:</p>
-                <div class="flex flex-wrap gap-2" id="chapter-buttons">
-                    <!-- Buttons will be generated here -->
+                <div
+                    class="bg-slate-50 rounded-xl p-4 md:p-6 mb-8 border border-slate-200 shadow-inner"
+                >
+                    <h3
+                        class="text-xl font-semibold text-center text-indigo-800 mb-4"
+                        id="current-chapter-title"
+                    >
+                        অধ্যায়
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="chapterBarChart"></canvas>
+                    </div>
                 </div>
-            </div>
 
-            <div class="bg-slate-50 rounded-xl p-4 md:p-6 mb-8 border border-slate-200 shadow-inner">
-                <h3 class="text-xl font-semibold text-center text-indigo-800 mb-4" id="current-chapter-title">অধ্যায়</h3>
-                <div class="chart-container">
-                    <canvas id="chapterBarChart"></canvas>
-                </div>
-            </div>
-
-            <div class="overflow-x-auto shadow-sm rounded-lg">
-                <table class="min-w-full divide-y divide-slate-200 border border-slate-200 rounded-lg overflow-hidden">
-                    <thead class="bg-slate-100">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">টপিকের নাম</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider">গুরুত্ব</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider">'গ' প্রশ্ন</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider">'ঘ' প্রশ্ন</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
-                                <div class="flex flex-col gap-2">
-                                    <span>বোর্ড ও সাল</span>
-                                    <div class="flex flex-wrap gap-1" id="year-filters">
-                                        <button class="year-filter-btn active bg-indigo-600 text-white px-2 py-1 rounded text-[10px] leading-none" data-year="all">সব</button>
-                                        <button class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none" data-year="২৫">২৫</button>
-                                        <button class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none" data-year="২৪">২৪</button>
-                                        <button class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none" data-year="২৩">২৩</button>
-                                        <button class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none" data-year="২২">২২</button>
-                                        <button class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none" data-year="২১">২১</button>
-                                        <button class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none" data-year="১৯">১৯</button>
-                                        <button class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none" data-year="১৮">১৮</button>
-                                        <button class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none" data-year="১৭">১৭</button>
+                <div class="overflow-x-auto shadow-sm rounded-lg">
+                    <table
+                        class="min-w-full divide-y divide-slate-200 border border-slate-200 rounded-lg overflow-hidden"
+                    >
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    টপিকের নাম
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    গুরুত্ব
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    'গ' প্রশ্ন
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    'ঘ' প্রশ্ন
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    <div class="flex flex-col gap-2">
+                                        <span>বোর্ড ও সাল</span>
+                                        <div
+                                            class="flex flex-wrap gap-1"
+                                            id="year-filters"
+                                        >
+                                            <button
+                                                class="year-filter-btn active bg-indigo-600 text-white px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="all"
+                                            >
+                                                সব
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="২৫"
+                                            >
+                                                ২৫
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="২৪"
+                                            >
+                                                ২৪
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="২৩"
+                                            >
+                                                ২৩
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="২২"
+                                            >
+                                                ২২
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="২১"
+                                            >
+                                                ২১
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="১৯"
+                                            >
+                                                ১৯
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="১৮"
+                                            >
+                                                ১৮
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="১৭"
+                                            >
+                                                ১৭
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-slate-200" id="chapter-table-body">
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody
+                            class="bg-white divide-y divide-slate-200"
+                            id="chapter-table-body"
+                        ></tbody>
+                    </table>
+                </div>
+            </section>
 
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
-            <h2 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2">গুরুত্ব অনুযায়ী টপিক (Priority Filter)</h2>
-            <p class="text-slate-600 mb-6 text-lg leading-relaxed">
-                পরীক্ষার প্রস্তুতির জন্য সবচেয়ে গুরুত্বপূর্ণ টপিকগুলো খুঁজে বের করতে নিচের স্টার রেটিং ফিল্টার ব্যবহার করুন। ৩-স্টার টপিকগুলো পরীক্ষায় সবচেয়ে বেশিবার এসেছে।
+            <section
+                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
+            >
+                <h2
+                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2"
+                >
+                    গুরুত্ব অনুযায়ী টপিক (Priority Filter)
+                </h2>
+                <p class="text-slate-600 mb-6 text-lg leading-relaxed">
+                    পরীক্ষার প্রস্তুতির জন্য সবচেয়ে গুরুত্বপূর্ণ টপিকগুলো খুঁজে
+                    বের করতে নিচের স্টার রেটিং ফিল্টার ব্যবহার করুন। ৩-স্টার
+                    টপিকগুলো পরীক্ষায় সবচেয়ে বেশিবার এসেছে।
+                </p>
+
+                <div class="flex flex-wrap gap-3 mb-6 justify-center">
+                    <button
+                        class="star-filter-btn active px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors"
+                        data-stars="all"
+                    >
+                        সকল টপিক
+                    </button>
+                    <button
+                        class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors"
+                        data-stars="3"
+                    >
+                        ★★★ (থ্রি স্টার)
+                    </button>
+                    <button
+                        class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors"
+                        data-stars="2"
+                    >
+                        ★★ (টু স্টার)
+                    </button>
+                    <button
+                        class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors"
+                        data-stars="1"
+                    >
+                        ★ (ওয়ান স্টার)
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto shadow-sm rounded-lg">
+                    <table
+                        class="min-w-full divide-y divide-slate-200 border border-slate-200"
+                    >
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    অধ্যায়
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    টপিকের নাম
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    গুরুত্ব
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
+                                >
+                                    মোট প্রশ্ন (গ+ঘ)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody
+                            class="bg-white divide-y divide-slate-200"
+                            id="filtered-topics-body"
+                        ></tbody>
+                    </table>
+                </div>
+
+                <div
+                    id="no-results-msg"
+                    class="hide text-center py-10 bg-slate-50 rounded-lg border border-slate-200 mt-4 text-slate-500 font-medium"
+                >
+                    এই ক্যাটাগরিতে কোনো টপিক পাওয়া যায়নি।
+                </div>
+            </section>
+        </main>
+
+        <footer
+            class="bg-slate-800 text-slate-300 py-8 text-center mt-12 border-t-4 border-indigo-600"
+        >
+            <p class="text-sm">
+                ডেটা সোর্স: বোর্ড প্রশ্ন বিশ্লেষণ রিপোর্ট | প্রস্তুতকৃত
+                ড্যাশবোর্ড
             </p>
+        </footer>
 
-            <div class="flex flex-wrap gap-3 mb-6 justify-center">
-                <button class="star-filter-btn active px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors" data-stars="all">সকল টপিক</button>
-                <button class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors" data-stars="3">★★★ (থ্রি স্টার)</button>
-                <button class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors" data-stars="2">★★ (টু স্টার)</button>
-                <button class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors" data-stars="1">★ (ওয়ান স্টার)</button>
-            </div>
-
-            <div class="overflow-x-auto shadow-sm rounded-lg">
-                <table class="min-w-full divide-y divide-slate-200 border border-slate-200">
-                    <thead class="bg-slate-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">অধ্যায়</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">টপিকের নাম</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider">গুরুত্ব</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider">মোট প্রশ্ন (গ+ঘ)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-slate-200" id="filtered-topics-body">
-                    </tbody>
-                </table>
-            </div>
-            
-            <div id="no-results-msg" class="hide text-center py-10 bg-slate-50 rounded-lg border border-slate-200 mt-4 text-slate-500 font-medium">
-                এই ক্যাটাগরিতে কোনো টপিক পাওয়া যায়নি।
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-slate-800 text-slate-300 py-8 text-center mt-12 border-t-4 border-indigo-600">
-        <p class="text-sm">ডেটা সোর্স: বোর্ড প্রশ্ন বিশ্লেষণ রিপোর্ট | প্রস্তুতকৃত ড্যাশবোর্ড</p>
-    </footer>
-
-    <script>
-        const dataDB = {
-            paper1: [
-                {
-                    chapter: "২য় অধ্যায়: ভেক্টর",
-                    topics: [
-                        { name: "নদী ও নৌকা সংক্রান্ত", stars: 3, starStr: "★★★", g: 20, gh: 24, boards: "কু. বো., ম. বো. ২৫; ঢা. বো., রা. বো., কু. বো., চ. বো., ব. বো., সি. বো., ম. বো. ২৪; ঢা. বো., রা. বো., চ. বো., দি. বো., ম. বো. ২৩; রা. বো., কু. বো., চ. বো., দি. বো. ২২; য. বো., চ. বো., সি. বো. ২১; কু. বো. ১৯; য. বো., চ. বো. ১৭" },
-                        { name: "আপেক্ষিক বেগ, বৃষ্টি পড়া", stars: 3, starStr: "★★★", g: 8, gh: 8, boards: "ম. বো. ২৫; ঢা. বো. ২৩; ঢা. বো., সি. বো., ম. বো. ২২; ঢা. বো., রা. বো. ১৯; রা. বো. ১৭; য. বো. ১৬" },
-                        { name: "ডট ও ক্রস গুণন ও ক্ষেত্রফল সম্পর্কিত", stars: 3, starStr: "★★★", g: 28, gh: 25, boards: "কু. বো., দি. বো., ব. বো., সি. বো., য. বো., ঢা. বো. ২৫; য. বো., কু. বো., ঢা. বো. ২৪; রা. বো., য. বো., দি. বো., ম. বো. ২৩; রা. বো., য. বো., ব. বো., দি. বো., ম. বো. ২২; কু. বো., দি. বো., ম. বো. ২১; ঢা. বো., চ. বো., সি. বো., ব. বো. ১৯; সকল বো. ১৮; ঢা. বো., য. বো. ১৭; ঢা. বো., কু. বো., চ. বো., ব. বো., দি. বো. ১৬" },
-                        { name: "অবস্থান ভেক্টর ও একক ভেক্টর", stars: 2, starStr: "★★", g: 9, gh: 9, boards: "দি. বো., চ. বো., ঢা. বো. ২৫; কু. বো., চ. বো., ম. বো. ২৪; সি. বো. ২৩; ঢা. বো., ম. বো. ২২; রা. বো., ম. বো. ২১; য. বো. ১৯; সকল বো. ১৮; কু. বো., ব. বো. ১৭; ঢা. বো. ১৬" },
-                        { name: "উপাংশ ও অভিক্ষেপ", stars: 2, starStr: "★★", g: 8, gh: 4, boards: "কু. বো., য. বো. ২৫; ঢা. বো., রা. বো., য. বো. ২৪; কু. বো. ২৩; রা. বো. ২১; য. বো. ১৯; কু. বো. ১৭; সি. বো. ১৬" },
-                        { name: "গ্রেডিয়েন্ট, ডাইভারজেন্স, কার্ল", stars: 2, starStr: "★★", g: 8, gh: 10, boards: "ব. বো., সি. বো., য. বো., রা. বো. ২৫; সি. বো., দি. বো. ২৪; রা. বো., চ. বো., সি. বো., ব. বো. ২২; চ. বো. ১৯" },
-                        { name: "লব্ধি ভেক্টর", stars: 1, starStr: "★", g: 5, gh: 6, boards: "য. বো. ২৩; কু. বো., ব. বো. ২২; দি. বো. ১৯; সকল বো. ১৭" }
-                    ]
-                },
-                {
-                    chapter: "৩য় অধ্যায়: গতিবিদ্যা",
-                    topics: [
-                        { name: "ভূমি হতে নির্দিষ্ট কোণে নিক্ষিপ্ত প্রাস", stars: 3, starStr: "★★★", g: 19, gh: 20, boards: "ঢা. বো., রা. বো., কু. বো., চ. বো., ব. বো., দি. বো. ১৯; সম্মিলিত বো. ১৮; ঢা. বো., য. বো., কু. বো., দি. বো. ১৭; য. বো., কু. বো., ব. বো., দি. বো. ১৬; ঢা. বো., রা. বো., য. বো., চ. বো., ব. বো. ১৫" },
-                        { name: "নির্দিষ্ট উচ্চতা হতে নিক্ষিপ্ত প্রাস", stars: 2, starStr: "★★", g: 2, gh: 2, boards: "সি. বো. ১৯; কু. বো. ১৫" },
-                        { name: "সরলরৈখিক গতি", stars: 1, starStr: "★", g: 3, gh: 2, boards: "চ. বো., সি. বো. ১৭; য. বো. ১৫" },
-                        { name: "বিভিন্ন লেখচিত্র সংক্রান্ত", stars: 1, starStr: "★", g: 3, gh: 3, boards: "রা. বো. ১৯; রা. বো. ১৭, ১৬" },
-                        { name: "অনুভূমিকভাবে নিক্ষিপ্ত প্রাস", stars: 1, starStr: "★", g: 1, gh: 3, boards: "সম্মিলিত বো. ১৮; কু. বো. ১৬; কু. বো. ১৫" }
-                    ]
-                },
-                {
-                    chapter: "৪র্থ অধ্যায়: নিউটনিয়ান বলবিদ্যা",
-                    topics: [
-                        { name: "বল ও বলের ধারণা", stars: 3, starStr: "★★★", g: 2, gh: 5, boards: "ঢা. বো. ২৫, ২৩; চ. বো. ২৩; সি. বো. ১৯; য. বো. ১৭" },
-                        { name: "সংঘর্ষ ও গতির সূত্র", stars: 3, starStr: "★★★", g: 11, gh: 9, boards: "ঢা. বো., দি. বো., রা. বো. ২৫; কু. বো., সি. বো. ২৪; সি. বো. ২৩; ব. বো. ২১; চ. বো. ২৩; চ. বো. ২২; ব. বো. ১৯; য. বো. ১৭; রা. বো. ১৬" },
-                        { name: "জড়তার ভ্রামক ও চক্রগতির ব্যাসার্ধ", stars: 3, starStr: "★★★", g: 8, gh: 8, boards: "য. বো., চ. বো., দি. বো., রা. বো. ২৫; য. বো. ২২, ২১; ঢা. বো. ২১; ব. বো. ২১; চ. বো. ২১; সি. বো. ১৯; সম্মিলিত বো. ১৮" },
-                        { name: "টর্ক", stars: 3, starStr: "★★★", g: 3, gh: 7, boards: "ব. বো. ২৪, ২১; চ. বো. ২৪, ২৩; বো. ২৪; রা. বো. ২২; কু. বো. ২১; ঢা. বো. ১৯" },
-                        { name: "কেন্দ্রমুখী বল ও কেন্দ্রবিমুখী বল", stars: 3, starStr: "★★★", g: 4, gh: 10, boards: "ঢা. বো., ব. বো. ২৫; ঢা. বো. ২৪; রা. বো. ২৪, ১৫; য. বো. ২৩; কু. বো. ২৩, ২২, ১৭; দি. বো. ২২, ২১; সি. বো. ২২; ব. বো. ২১; চ. বো. ১৫" },
-                        { name: "ব্যাংকিং কোণ", stars: 3, starStr: "★★★", g: 17, gh: 25, boards: "ঢা. বো., কু. বো., ব. বো. ২৫; ঢা. বো. ২৪; ঢা. বো., ম. বো., কু. বো., ব. বো. ২৩; ঢা. বো., কু. বো., সি. বো., দি. বো., চ. বো., ব. বো. ২১; ঢা. বো., কু. বো., সম্মিলিত বো. ১৮; রা. বো., সি. বো. ১৭; সি. বো. ১৬" },
-                        { name: "কৌণিক গতি, কৌণিক ভরবেগ, ঘূর্ণনগতিশক্তি", stars: 2, starStr: "★★", g: 21, gh: 8, boards: "চ. বো., ব. বো., দি. বো., ২৫; সি. বো., রা. বো. ২১; য. বো. ১৯; সম্মিলিত বো. ১৮; ঢা. বো., কু. বো. ১৭; রা. বো., য. বো., চ. বো., দি. বো. ২৩, ২২, ২১; য. বো. ২৩, কু. বো. ২২, ২১; চ. বো. ২১, ১৯; ব. বো. ১৭, ১৫; য. বো. ২৪, সি. বো. ২৩; রা. বো. ২২; চ. বো. ১৯; ব. বো. ১৭" }
-                    ]
-                },
-                {
-                    chapter: "৫ম অধ্যায়: কাজ, শক্তি ও ক্ষমতা",
-                    topics: [
-                        { name: "কাজ সংক্রান্ত", stars: 3, starStr: "★★★", g: 18, gh: 11, boards: "ঢা. বো., ব. বো., ম. বো. ২৫; চ. বো. ২৪, ম. বো. ২৪, ২২; ঢা. বো. ২৩, ১৯; রা. বো. ২৩, ২১, ১৭; য. বো. ২৪, ২২; কু. বো. ২৩; সি. বো. ২২, ২১, ১৯; ব. বো. ২১; ম. বো. ২১; দি. বো. ১৭; সম্মিলিত বো. ১৮" },
-                        { name: "শক্তির সংরক্ষণশীলতা নীতি", stars: 3, starStr: "★★★", g: 4, gh: 11, boards: "সি. বো., য. বো., ২৫; কু. বো. ২৪, ২২, ১৯, ১৫; ঢা. বো. ১৯, ১৬; সি. বো. ১৯; রা. বো. ১৬; সম্মিলিত বো. ১৮" },
-                        { name: "কুয়া ও চৌবাচ্চা", stars: 3, starStr: "★★★", g: 24, gh: 23, boards: "রা. বো., কু. বো., ২৫; ঢা. বো. ২৪, ২৩, ২২, ২১; রা. বো. ২৪, ২২, ২১, ১৯; য. বো. ২৪, ২২, ২১; দি. বো. ২৪, ২২, ২১; ব. বো. ২৪, ২৩; সি. বো. ২৩, ২১; চ. বো. ২১, ১৭; কু. বো. ২১" },
-                        { name: "বিভবশক্তি", stars: 2, starStr: "★★", g: 9, gh: 1, boards: "সি. বো., য. বো., ম. বো., ২৫; কু. বো. ২৪; সি. বো. ২২; ব. বো. ২১; সি. বো. ১৯; ম. বো. ২১" },
-                        { name: "ক্ষমতা ও কর্মদক্ষতা", stars: 2, starStr: "★★", g: 4, gh: 7, boards: "ঢা. বো., ব. বো., ২৫; য. বো. ২৪; চ. বো. ২৪, ২২; রা. বো. ২১; সি. বো. ২১; ঢা. বো. ১৭; ম. বো. ২১" },
-                        { name: "স্প্রিং বল দ্বারা কাজ", stars: 1, starStr: "★", g: 3, gh: 2, boards: "কু. বো. ২৪; দি. বো. ২৩; য. বো. ২৩, ২৪" },
-                        { name: "কাজ-শক্তি উপপাদ্য এবং গতিশক্তি", stars: 1, starStr: "★", g: 0, gh: 5, boards: "কু. বো. ২৩; য. বো. ২২; ম. বো. ২২, ব. বো. ২১" }
-                    ]
-                },
-                {
-                    chapter: "৬ষ্ঠ অধ্যায়: মহাকর্ষ ও অভিকর্ষ",
-                    topics: [
-                        { name: "অভিকর্ষজ ত্বরণ", stars: 3, starStr: "★★★", g: 17, gh: 13, boards: "ঢা. বো. ২৪; চ. বো. ২৪, ১৯; কু. বো. ২৪; ব. বো. ২৪, ১৯, ১৭; সি. বো. ২৪, ২২, ১৯; ম. বো. ২৪; রা. বো. ২৩, ২২; য. বো. ২৩, ১৭; ম. বো. ২৩; দি. বো. ২২, ১৯, ১৭" },
-                        { name: "মুক্তি বেগ", stars: 3, starStr: "★★★", g: 12, gh: 16, boards: "দি. বো. ২৪, ২৩, ২২; রা. বো. ২৪, ২২; কু. বো. ২৩; য. বো. ২৩, ২২, ১৯; ব. বো. ২৩, ১৯; সি. বো. ২৩, ১৭; চ. বো. ২২, ১৯, ১৭; ম. বো. ২২; সম্মিলিত বো. ১৮" },
-                        { name: "মহাকর্ষীয় প্রাবল্য ও বিভব", stars: 2, starStr: "★★", g: 8, gh: 2, boards: "য. বো. ২৪, ২৩; রা. বো. ২৪; কু. বো. ২২, ১৭; ব. বো. ২২; চ. বো. ১৭" },
-                        { name: "উপগ্রহ", stars: 2, starStr: "★★", g: 3, gh: 7, boards: "সি. বো. ২৪, ১৭; য. বো. ২৪; ঢা. বো. ২২; দি. বো. ১৯, ১৭; সম্মিলিত বো. ১৮" },
-                        { name: "মহাকর্ষ ও কেপলারের সূত্র", stars: 1, starStr: "★", g: 0, gh: 0, boards: "-" },
-                        { name: "নিউটনের মহাকর্ষ সূত্র", stars: 1, starStr: "★", g: 1, gh: 2, boards: "কু. বো. ২২, ১৭; সম্মিলিত বো. ১৮; য. বো. ১৭" }
-                    ]
-                },
-                {
-                    chapter: "৭ম অধ্যায়: পদার্থের গাঠনিক ধর্ম",
-                    topics: [
-                        { name: "স্থিতিস্থাপক গুণাঙ্ক", stars: 3, starStr: "★★★", g: 10, gh: 34, boards: "ঢা. বো., ব. বো., রা. বো., চ. বো., য. বো., সি. বো., কু. বো., ২৫; ঢা. বো. ২৪, ২২, ১৯, ১৭, ১৬, ১৫; চ. বো. ২৪, ২৩, ১৯, ১৭; ম. বো. ২৪, ২৩; দি. বো. ২৪, ২৩, ২২, ১৯, ১৫; রা. বো. ২৪, ২৩, ১৯; ব. বো. ২৪, ২২, ১৯; য. বো. ২৩, ২২, ১৭, ১৫; ব. বো. ২৩, ২২, ১৯, ১৫" },
-                        { name: "পয়সনের অনুপাত", stars: 3, starStr: "★★★", g: 18, gh: 6, boards: "রা. বো., চ. বো., কু. বো. ২৫; ঢা. বো. ২৪, ২৩, ২২, ১৫; চ. বো. ২৪, ১৯; দি. বো. ২৪, ২৩, ১৫; য. বো. ২৪, ২২; কু. বো. ২৪, ২২; সি. বো. ২৪, ২৩, ১৯; ব. বো. ২৪, ২২, ১৫; রা. বো. ২৩, ১৯; ম. বো. ২৩" },
-                        { name: "স্থিতিস্থাপক সঞ্চিত শক্তি", stars: 3, starStr: "★★★", g: 15, gh: 12, boards: "ম. বো., ব. বো., য. বো., দি. বো., ২৫; ম. বো. ২৪; য. বো. ২৪, ২৩, ১৮, ১৫; ঢা. বো. ২৩, ১৯, ১৮, ১৬; চ. বো. ২৩; সি. বো. ২২, ১৯, ১৮; দি. বো. ২২, ১৯, ১৮" },
-                        { name: "স্থিতিস্থাপকতা", stars: 2, starStr: "★★", g: 5, gh: 4, boards: "রা. বো. ২৪, ২২; ব. বো. ২৪, ২৩; চ. বো. ২৩; ম. বো. ২২; ঢা., য., দি., সি., বো. ১৮" },
-                        { name: "প্রবাহী ও সান্দ্রতা গুণাঙ্ক", stars: 2, starStr: "★★", g: 5, gh: 6, boards: "কু. বো. ১৯, ১৮, ১৭; রা. বো. ১৯; চ. বো. ১৯; ব. বো. ১৮, ১৭, ১৬; দি. বো. ১৬" },
-                        { name: "পৃষ্ঠটান ও পৃষ্ঠশক্তি", stars: 2, starStr: "★★", g: 2, gh: 1, boards: "কু. বো. ১৯, ১৭; দি. বো. ১৭" },
-                        { name: "স্পর্শকোণ ও কৈশিকতা", stars: 2, starStr: "★★", g: 2, gh: 3, boards: "কু. বো. ১৮; চ. বো. ১৮, ১৬; ব. বো. ১৮; রা. বো. ১৬" }
-                    ]
-                },
-                {
-                    chapter: "৮ম অধ্যায়: পর্যাবৃত্ত গতি",
-                    topics: [
-                        { name: "সরলছন্দিত গতির সমীকরণ", stars: 3, starStr: "★★★", g: 17, gh: 4, boards: "ব. বো., ঢা. বো. ২৫; ঢা. বো., য. বো., সি. বো., ম. বো. ২৪; রা. বো., য. বো., সি. বো., ম. বো. ২৩; ঢা. বো., কু. বো. ২২; কু. বো. ২১; য. বো. ১৯; রা. বো. ১৭" },
-                        { name: "সেকেন্ড দোলক সংক্রান্ত", stars: 3, starStr: "★★★", g: 21, gh: 21, boards: "ম. বো., দি. বো., সি. বো., য. বো., রা. বো., কু. বো. ২৪; ঢা. বো., কু. বো., চ. বো., ব. বো., দি. বো., ম. বো. ২২; য. বো., কু. বো., সি. বো., দি. বো. ২১; ঢা. বো., রা. বো. ১৯" },
-                        { name: "স্প্রিং এর সরল ছন্দিত গতি", stars: 2, starStr: "★★", g: 8, gh: 5, boards: "চ. বো. ২৫; য. বো., চ. বো., ম. বো. ২৪; ঢা. বো., ব. বো. ২২; য. বো. ১৯" },
-                        { name: "মোট শক্তি, গতিশক্তি ও বিভবশক্তি", stars: 2, starStr: "★★", g: 9, gh: 16, boards: "ম. বো., ব. বো., চ. বো. ২৫; ঢা. বো., য. বো., চ. বো., দি. বো., ব. বো. ২৪; য. বো., সি. বো. ২৩; ঢা. বো., সি. বো. ২২; য. বো., কু. বো. ২১; ব. বো. ১৭" },
-                        { name: "সরলদোলকের গতি", stars: 1, starStr: "★", g: 5, gh: 5, boards: "রা. বো., দি. বো., ম. বো. ২৩; ঢা. বো., য. বো. ২১; চ. বো. ১৯; ঢা. বো. ১৭" }
-                    ]
-                },
-                {
-                    chapter: "৯ম অধ্যায়: তরঙ্গ",
-                    topics: [
-                        { name: "অগ্রগামী তরঙ্গের সমীকরণ", stars: 3, starStr: "★★★", g: 12, gh: 3, boards: "ঢা. বো. ১৯, ১৭, ১৬; রা. বো. ১৯, ১৭; ব. বো. ১৯; সি. বো. ১৯, ১৫; সম্মিলিত বো. ১৮; কু. বো. ১৭; য. বো. ১৫; চ. বো. ১৬, ১৫" },
-                        { name: "তরঙ্গের তীব্রতা ও তীব্রতা লেভেল", stars: 3, starStr: "★★★", g: 6, gh: 8, boards: "ব. বো. ১৯, ১৭; সি. বো. ১৯, ১৬; সম্মিলিত বো. ১৮; ব. বো. ১৬, ১৫; রা. বো. ১৫; চ. বো. ১৫" },
-                        { name: "তরঙ্গের বিভিন্ন রাশি", stars: 2, starStr: "★★", g: 7, gh: 2, boards: "কু. বো. ১৯; চ. বো. ১৯; সম্মিলিত বো. ১৮; দি. বো. ১৭, ১৫; সি. বো. ১৭; রা. বো. ১৬; য. বো. ১৬" },
-                        { name: "স্থির তরঙ্গ", stars: 2, starStr: "★★", g: 2, gh: 5, boards: "ঢা. বো. ১৯; চ. বো. ১৯, ১৬; রা. বো. ১৯; কু. বো. ১৭; ব. বো. ১৭; সি. বো. ১৫" },
-                        { name: "বীট ও অজানা সুরশলাকার কম্পাঙ্ক নির্ণয়", stars: 2, starStr: "★★", g: 1, gh: 9, boards: "ব. বো. ১৯, ১৭; ব. বো. ১৯, ১৭; সি. বো. ১৯, ১৭; সম্মিলিত বো. ১৮; ঢা. বো. ১৭; সি. বো. ১৭; রা. বো. ১৫" },
-                        { name: "টানা তারে ও নলে শব্দের বেগ", stars: 1, starStr: "★", g: 2, gh: 3, boards: "চ. বো. ১৭; ব. বো. ১৭; য. বো. ১৫" }
-                    ]
-                },
-                {
-                    chapter: "১০ম অধ্যায়: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব",
-                    topics: [
-                        { name: "আদর্শ গ্যাস সমীকরণ", stars: 3, starStr: "★★★", g: 20, gh: 20, boards: "ম. বো., দি. বো., সি. বো., চ. বো., রা. বো., ২৫; য. বো., কু. বো., সি. বো., ব. বো., ম. বো., ২৪; রা. বো., য. বো., কু. বো., সি. বো., ২৩; য. বো., চ. বো., সি. বো., দি. বো. ২২; রা. বো., ব. বো., ২১; ঢা. বো., চ. বো., দি. বো., রা. বো., কু. বো., ১৯; সকল বো. ১৮; চ. বো., ব. বো. ১৭; য. বো. ১৬" },
-                        { name: "গ্যাসের গতিতত্ত্বের সমীকরণ", stars: 3, starStr: "★★★", g: 5, gh: 11, boards: "দি. বো., ব. বো., য. বো., চ. বো. ২৫; য. বো., ব. বো. ২৪; দি. বো., ম. বো. ২৩; সি. বো., দি. বো. ২২; য. বো. ১৯, ১৭; কু. বো. ১৭, ১৬; রা. বো. ১৬" },
-                        { name: "আপেক্ষিক আর্দ্রতা, বাষ্পচাপ ও শিশিরাঙ্ক", stars: 3, starStr: "★★★", g: 30, gh: 32, boards: "ঢা. বো., দি. বো., সি. বো. ২৫; রা. বো., চ. বো., দি. বো. ২৪; ঢা. বো., য. বো., চ. বো., সি. বো., ব. বো. ২৩; ঢা. বো., রা. বো., য. বো., কু. বো., চ. বো., ব. বো., ম. বো. ২২; ঢা. বো., রা. বো., ব. বো., ম. বো. ২১; সকল বোর্ড ১৮; রা. বো., ঢা. বো., সি. বো. ১৭; চ. বো., সি. বো., ব. বো., দি. বো. ১৬" },
-                        { name: "স্বাধীনতার মাত্রা ও গ্যাসের গতিশক্তি", stars: 2, starStr: "★★", g: 14, gh: 4, boards: "ম. বো., সি. বো., য. বো. ২৫; সি. বো. ২৪; ঢা. বো., য. বো., কু. বো., দি. বো., ম. বো. ২৩; য. বো. ২২; ঢা. বো., রা. বো., য. বো., কু. বো. ১৯; চ. বো., ১৭; দি. বো. ১৭; য. বো., কু. বো. ১৬" },
-                        { name: "গড় মুক্ত পথ", stars: 1, starStr: "★", g: 0, gh: 2, boards: "দি. বো. ১৭; রা. বো. ১৬" }
-                    ]
-                }
-            ],
-            paper2: [
-                {
-                    chapter: "১ম অধ্যায়: তাপগতিবিদ্যা",
-                    topics: [
-                        { name: "কার্নো ইঞ্জিন ও রেফ্রিজারেটর", stars: 3, starStr: "★★★", g: 34, gh: 35, boards: "ঢা. বো. ২৫, ২২, ২১, ১৭, ১৫; কু. বো. ২৫, ২২, ১৭, ১৫; সি. বো. ২৫, ২৪, ২২; য. বো. ২৫, ২৪, ২৪, ২২, ১৯, ১৫; মা. বো. ২৫, ২৪, ২১, ১৫; দি. বো. ২৫, ২৪, ১৭; ব. বো. ২৫, ২৪; চ. বো. ২৪, ২১, ১৭, ১৬, ১৫; ব. বো. ২২, ১৫; সম্মিলিত বোর্ড ১৮" },
-                        { name: "তাপগতিবিদ্যার ১ম সূত্র", stars: 2, starStr: "★★", g: 12, gh: 13, boards: "য. বো. ২৫; সি. বো. ২৪, ২৩, ১৭; ঢা. বো. ২৩, ২২; দি. বো. ২৩, ২১, ১৫; রা. বো. ২২, ১৯; কু. বো. ২২, ২১; চ. বো. ১৯; মা. বো. ১৭" },
-                        { name: "রুদ্ধতাপীয় প্রক্রিয়া", stars: 2, starStr: "★★", g: 6, gh: 7, boards: "চ. বো. ২৫, ২২; ঢা. বো. ২৪, ২৩; মা. বো. ২৩, ২২, ১৮; সি. বো. ২৩; দি. বো. ২২; য. বো. ২২" },
-                        { name: "এন্ট্রপি", stars: 2, starStr: "★★", g: 7, gh: 9, boards: "কু. বো. ২৫, ২২; সি. বো. ২৫; মা. বো. ২৫, ২৪; য. বো. ২৪, ব. বো. ২৩, ১৭, ১৫; ঢা. বো. ২২; ব. বো. ২২, ১৯, ১৭; দি. বো. ২২; চ. বো. ১৯" },
-                        { name: "সমোষ্ণ প্রক্রিয়া", stars: 1, starStr: "★", g: 8, gh: 3, boards: "চ. বো. ২৫, ২২; ঢা. বো. ২৪; দি. বো. ২৪; মা. বো. ২২, ১৯; সি. বো. ২২, ১৬; ব. বো. ১৬" },
-                        { name: "মোলার তাপধারণ ক্ষমতা", stars: 1, starStr: "★", g: 2, gh: 1, boards: "কু. বো. ২৪; মা. বো. ২৩" },
-                        { name: "বিভিন্ন তাপগতীয় চলক", stars: 1, starStr: "★", g: 1, gh: 0, boards: "ব. বো. ২৫" }
-                    ]
-                },
-                {
-                    chapter: "২য় অধ্যায়: স্থির তড়িৎ",
-                    topics: [
-                        { name: "তড়িৎ বিভব", stars: 3, starStr: "★★★", g: 24, gh: 16, boards: "ঢা. বো. ২৫, ২৪, ২৩, ২২, ১৯, ১৮, ১৭; মা. বো. ২৫, ২৩, ২২, ১৯, ১৫; কু. বো. ২৫, ২৪, ২৩, ১৭; ব. বো. ২৪, ২৩; চ. বো. ২৫, ২৪; য. বো. ২৪, ২৩, ২২, ১৯, ১৮, ১৭, ১৬; সি. বো. ২৫, ২৪, ২৩, ১৮, ১৯, ১৫; ব. বো. ২৩, ২২, ১৬; দি. বো. ২৪, ২৩, ২২, ১৯" },
-                        { name: "তড়িৎ প্রাবল্য", stars: 3, starStr: "★★★", g: 16, gh: 15, boards: "কু. বো. ২৫, ২৪, ২৩; ঢা. বো. ২৫, ২৪, ১৮; সি. বো. ২৫, ২৩, ২২, ১৯; মা. বো. ২৫, ২৩, ১৯, ১৬; ব. বো. ২৫, ২৪, ২৩; চ. বো. ২৪, ২২, ১৭; য. বো. ২২, ১৫, ১৯, ১৮, ১৭, ১৬, ১৫; দি. বো. ১৮, ১৫; ব. বো. ১৭, ১৬" },
-                        { name: "ধারক", stars: 3, starStr: "★★★", g: 19, gh: 13, boards: "ঢা. বো. ২৪, ২৩, ১৬; মা. বো. ২৫, ২২, ১৫; য. বো. ২২; চ. বো. ২৫, ২২, ১৯; কু. বো. ২২, ১৯; ব. বো. ২২; সি. বো. ২৩; ব. বো. ২৪, ২৩; দি. বো. ২২, ১৭, ১৫" },
-                        { name: "ধারকের সমবায়", stars: 2, starStr: "★★", g: 8, gh: 13, boards: "মা. বো. ২৪, ২২, ১৭; ব. বো. ২৫, ২৩; কু. বো. ২৩, ১৯; সি. বো. ২৫, ২৩; ব. বো. ২৩, ২২, ১৯, ১৫; দি. বো. ১৯, ১৭" },
-                        { name: "তড়িৎবল", stars: 1, starStr: "★", g: 6, gh: 16, boards: "ব. বো. ২৫; য. বো. ২৫, ২৩; দি. বো. ২৫, ২৪, ২২; চ. বো. ২৫, ১৯; ঢা. বো. ২২, ১৯, ১৭; মা. বো. ২৩; কু. বো. ১৭; সি. বো. ২৪, ২৩, ২১, ১৯, ১৭; ব. বো. ২৩" },
-                        { name: "তড়িৎ দ্বিমেরু", stars: 1, starStr: "★", g: 2, gh: 0, boards: "ঢা. বো. ২৫; য. বো. ২৩" }
-                    ]
-                },
-                {
-                    chapter: "৩য় অধ্যায়: চল তড়িৎ",
-                    topics: [
-                        { name: "ওহমের সূত্র", stars: 3, starStr: "★★★", g: 50, gh: 40, boards: "সি. বো. ২৫, ২৪, ২৩, ২১, ১৮, ১৫; দি. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৭, ১৫; ঢা. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৭, ১৫; মা. বো. ২৫, ২৪, ২২, ২১, ১৮, ১৭, ১৬; য. বো. ২৪, ২৩, ২২, ২১; চ. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৬, ১৫; কু. বো. ২৪, ২১, ১৯, ১৮, ১৭, ১৬, ১৫; ব. বো. ২৪, ২২, ২১, ১৯, ১৮, ১৭" },
-                        { name: "হুইটস্টোন ব্রিজ ও মিটার ব্রিজ", stars: 2, starStr: "★★", g: 6, gh: 9, boards: "ব. বো. ২৫, ২৪; ঢা. বো. ২৩; মা. বো. ২৩; য. বো. ২৪, ২৩; কু. বো. ২২; সি. বো. ২১, ১৭; ব. বো. ১৯; দি. বো. ২১" },
-                        { name: "পটেনশিওমিটার", stars: 2, starStr: "★★", g: 5, gh: 8, boards: "ব. বো. ২৫, ২৩, ১৭; ঢা. বো. ২২, ১৬; য. বো. ২৪; চ. বো. ২১; ব. বো. ২১" },
-                        { name: "কার্শফের সূত্র", stars: 2, starStr: "★★", g: 5, gh: 8, boards: "য. বো. ২২, ২১; চ. বো. ২৫; কু. বো. ২৩, ১৬; সি. বো. ২৫, ২৩, ২১, ১৫; ব. বো. ২৪; দি. বো. ২৪" },
-                        { name: "কোষের সমবায়", stars: 1, starStr: "★", g: 11, gh: 2, boards: "ব. বো. ২৫; দি. বো. ২৫, ১৫; ঢা. বো. ২৪, ২১, ১৫; মা. বো. ২১, ১৭; চ. বো. ১৭, ১৫; ব. বো. ১৯; সি. বো. ১৯" },
-                        { name: "রোধ ও রোধের তাপীয় সূত্র", stars: 1, starStr: "★", g: 8, gh: 15, boards: "সি. বো. ২৫, ২২, ১৯; ব. বো. ২৫, ২২, ২১; ঢা. বো. ২১; মা. বো. ২৩, ২১; য. বো. ২১; চ. বো. ২৪, ২৩, ১৭; কু. বো. ২৪, ২১, ১৯; ব. বো. ২১" }
-                    ]
-                },
-                {
-                    chapter: "৪র্থ অধ্যায়: তড়িৎ চৌম্বক ক্রিয়া",
-                    topics: [
-                        { name: "বায়ো-স্যাভার্ট সূত্রের প্রয়োগ", stars: 3, starStr: "★★★", g: 11, gh: 9, boards: "ঢা. বো., সি. বো., চ. বো. ১৯; মা. বো., সি. বো., ব. বো., চ. বো. ১৭; ঢা. বো., দি. বো., চ. বো., ব. বো. ১৬" },
-                        { name: "কুণ্ডলীর উপর টর্ক", stars: 3, starStr: "★★★", g: 4, gh: 6, boards: "ঢা. বো., য. বো., দি. বো., মা. বো. ১৭; সি. বো., য. বো. ১৬" },
-                        { name: "পরিবাহী তারের উপর চৌম্বক বল", stars: 3, starStr: "★★★", g: 3, gh: 4, boards: "মা. বো., সি. বো. ১৯; মা. বো., চ. বো., য. বো., ব. বো. ১৮; চ. বো. ১৭" },
-                        { name: "অ্যাম্পিয়ার সূত্রের উপর চৌম্বক বল", stars: 2, starStr: "★★", g: 2, gh: 2, boards: "ঢা. বো., সি. বো., মা. বো., দি. বো. ১৮; সি. বো. ১৭" },
-                        { name: "ভূ-চুম্বকত্ব", stars: 1, starStr: "★", g: 2, gh: 1, boards: "য. বো., মা. বো. ১৫" },
-                        { name: "হল ক্রিয়া", stars: 1, starStr: "★", g: 0, gh: 0, boards: "-" }
-                    ]
-                },
-                {
-                    chapter: "৫ম অধ্যায়: আবেশ ও পরিবর্তী প্রবাহ",
-                    topics: [
-                        { name: "দিক পরিবর্তী প্রবাহ", stars: 3, starStr: "★★★", g: 13, gh: 14, boards: "চ. বো. ১৯, ১৭, ১৬, ১৫; ব. বো. ১৯, ১৭, ১৫; সি. বো. ১৯, ১৮, ১৬" },
-                        { name: "তড়িৎ চৌম্বকীয় আবেশ", stars: 2, starStr: "★★", g: 2, gh: 1, boards: "সি. বো. ১৯; ব. বো. ১৫" },
-                        { name: "স্বকীয় ও পারস্পরিক আবেশ", stars: 1, starStr: "★", g: 2, gh: 2, boards: "দি. বো. ১৯; মা. বো. ১৭" }
-                    ]
-                },
-                {
-                    chapter: "৬ষ্ঠ অধ্যায়: জ্যামিতিক আলোকবিজ্ঞান",
-                    topics: [
-                        { name: "লেন্স", stars: 3, starStr: "★★★", g: 18, gh: 17, boards: "ঢা. বো. ১৯, ১৫; চ. বো. ১৯, ১৮, ১৭, ১৬" },
-                        { name: "প্রিজম", stars: 2, starStr: "★★", g: 8, gh: 8, boards: "ঢা. বো. ১৮, ১৭; সি. বো. ১৮, ১৫" },
-                        { name: "অণুবীক্ষণ যন্ত্র", stars: 1, starStr: "★", g: 4, gh: 4, boards: "য. বো. ১৭; চ. বো. ১৬; দি. বো. ১৫" },
-                        { name: "দূরবীক্ষণ যন্ত্র", stars: 1, starStr: "★", g: 2, gh: 3, boards: "ঢা. বো. ১৯; য. বো. ১৭" }
-                    ]
-                },
-                {
-                    chapter: "৭ম অধ্যায়: ভৌত আলোকবিজ্ঞান",
-                    topics: [
-                        { name: "আলোর ব্যতিচার", stars: 3, starStr: "★★★", g: 47, gh: 47, boards: "ঢা. বো. ২৫, ২৪, ২৩, ২২, ২১; মা. বো. ২৫, ২৩, ২২" },
-                        { name: "গ্রেটিং ও অপবর্তন", stars: 2, starStr: "★★", g: 8, gh: 13, boards: "ঢা. বো. ২২, ১৯; মা. বো. ২৪, ২২" }
-                    ]
-                },
-                {
-                    chapter: "৮ম অধ্যায়: আধুনিক পদার্থবিজ্ঞান",
-                    topics: [
-                        { name: "আপেক্ষিকতা", stars: 3, starStr: "★★★", g: 38, gh: 35, boards: "ঢা. বো. ২৫, ২৪, ২১, ১৭; মা. বো. ২৩, ২১" },
-                        { name: "তড়িৎ ক্রিয়া ও ডি-ব্রগলি", stars: 3, starStr: "★★★", g: 36, gh: 36, boards: "ঢা. বো. ২৫, ২৩, ২২, ১৫" },
-                        { name: "ভর-শক্তি সম্পর্ক", stars: 2, starStr: "★★", g: 5, gh: 7, boards: "ঢা. বো. ২৫, ১৭" },
-                        { name: "এক্স-রে", stars: 1, starStr: "★", g: 1, gh: 1, boards: "কু. বো. ১৭" }
-                    ]
-                },
-                {
-                    chapter: "৯ম অধ্যায়: নিউক্লিয়ার পদার্থবিজ্ঞান",
-                    topics: [
-                        { name: "তেজস্ক্রিয়তা", stars: 3, starStr: "★★★", g: 43, gh: 43, boards: "মা. বো. ২৫, ২৪, ২৩" },
-                        { name: "নিউক্লিয়াসের গঠন", stars: 3, starStr: "★★★", g: 15, gh: 15, boards: "ঢা. বো. ২৫, ১৯" },
-                        { name: "ভরত্রুটি ও বন্ধনশক্তি", stars: 2, starStr: "★★", g: 11, gh: 11, boards: "ঢা. বো. ২৩" },
-                        { name: "নিউক্লিয়ার বিক্রিয়া", stars: 1, starStr: "★", g: 2, gh: 2, boards: "চ. বো. ২৩" }
-                    ]
-                },
-                {
-                    chapter: "১০ম অধ্যায়: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",
-                    topics: [
-                        { name: "ট্রানজিস্টর", stars: 3, starStr: "★★★", g: 52, gh: 53, boards: "ঢা. বো. ২৫, ২৪, ২২, ২১" },
-                        { name: "বুলিয়ান অ্যালজেবরা", stars: 2, starStr: "★★", g: 14, gh: 14, boards: "ঢা. বো. ২৩, ২১" },
-                        { name: "অর্ধপরিবাহী ও ডায়োড", stars: 1, starStr: "★", g: 9, gh: 9, boards: "ঢা. বো. ২২" },
-                        { name: "সংখ্যা পদ্ধতি", stars: 1, starStr: "★", g: 1, gh: 1, boards: "কু. বো. ২১" }
-                    ]
-                }
-            ]
-        };
-
-        let currentPaper = 'paper1';
-        let rawData = dataDB[currentPaper];
-        let overviewChartInstance = null;
-        let chapterBarChartInstance = null;
-        let currentChapterIndex = 0;
-        let currentYearFilter = 'all';
-
-        function initApp() {
-            updateDashboard();
-            setupFilterListeners();
-            setupYearFilters();
-        }
-
-        function switchPaper(paperKey) {
-            currentPaper = paperKey;
-            rawData = dataDB[currentPaper];
-            
-            // Update Toggle Buttons UI
-            document.getElementById('btn-paper1').classList.remove('active');
-            document.getElementById('btn-paper2').classList.remove('active');
-            document.getElementById(`btn-${paperKey}`).classList.add('active');
-
-            // Reset priority filters to 'all'
-            document.querySelectorAll('.star-filter-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector('.star-filter-btn[data-stars="all"]').classList.add('active');
-
-            // Reset year filters to 'all'
-            document.querySelectorAll('.year-filter-btn').forEach(b => {
-                b.classList.remove('active', 'bg-indigo-600', 'text-white');
-                b.classList.add('bg-slate-200', 'text-slate-700');
-            });
-            const allYearBtn = document.querySelector('.year-filter-btn[data-year="all"]');
-            if (allYearBtn) {
-                allYearBtn.classList.remove('bg-slate-200', 'text-slate-700');
-                allYearBtn.classList.add('active', 'bg-indigo-600', 'text-white');
-            }
-            currentYearFilter = 'all';
-
-            updateDashboard();
-        }
-
-        function updateDashboard() {
-            calculateOverallStats();
-            createChapterButtons();
-            loadChapterData(0); 
-            renderFilteredTopics('all');
-        }
-
-        function calculateOverallStats() {
-            let totalG = 0;
-            let totalGh = 0;
-
-            rawData.forEach(chapter => {
-                chapter.topics.forEach(topic => {
-                    totalG += topic.g;
-                    totalGh += topic.gh;
-                });
-            });
-
-            document.getElementById('total-g-stat').innerText = totalG;
-            document.getElementById('total-gh-stat').innerText = totalGh;
-
-            const ctx = document.getElementById('overviewChart').getContext('2d');
-            
-            if (overviewChartInstance) {
-                overviewChartInstance.destroy();
-            }
-
-            overviewChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ["'গ' প্রশ্ন (প্রয়োগ)", "'ঘ' প্রশ্ন (উচ্চতর দক্ষতা)"],
-                    datasets: [{
-                        data: [totalG, totalGh],
-                        backgroundColor: ['#4f46e5', '#f59e0b'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: "'Hind Siliguri', sans-serif" } } }
-                    }
-                }
-            });
-        }
-
-        function createChapterButtons() {
-            const container = document.getElementById('chapter-buttons');
-            container.innerHTML = ''; 
-            rawData.forEach((chapter, index) => {
-                const btn = document.createElement('button');
-                const shortName = chapter.chapter.split(':')[0];
-                btn.className = `tab-btn px-4 py-2 border border-slate-300 rounded-full text-sm font-medium ${index === 0 ? 'active' : 'text-slate-600 hover:bg-slate-100'}`;
-                btn.innerText = shortName;
-                btn.onclick = () => {
-                    document.querySelectorAll('.tab-btn').forEach(b => {
-                        b.classList.remove('active');
-                        b.classList.add('text-slate-600', 'hover:bg-slate-100');
-                    });
-                    btn.classList.add('active');
-                    btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
-                    loadChapterData(index);
-                };
-                container.appendChild(btn);
-            });
-        }
-
-        function loadChapterData(index) {
-            currentChapterIndex = index;
-            const chapter = rawData[index];
-            document.getElementById('current-chapter-title').innerText = chapter.chapter;
-
-            const labels = chapter.topics.map(t => {
-                if(t.name.length > 16) {
-                    return t.name.match(/.{1,16}(\s|$)/g) || [t.name];
-                }
-                return t.name;
-            });
-            const gData = chapter.topics.map(t => t.g);
-            const ghData = chapter.topics.map(t => t.gh);
-
-            if (chapterBarChartInstance) {
-                chapterBarChartInstance.destroy();
-            }
-
-            const ctx = document.getElementById('chapterBarChart').getContext('2d');
-            chapterBarChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: "'গ' প্রশ্ন",
-                            data: gData,
-                            backgroundColor: '#6366f1',
-                            borderRadius: 4
-                        },
-                        {
-                            label: "'ঘ' প্রশ্ন",
-                            data: ghData,
-                            backgroundColor: '#fbbf24',
-                            borderRadius: 4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: '#e2e8f0' } },
-                        x: { grid: { display: false }, ticks: { font: { family: "'Hind Siliguri', sans-serif", size: 11 } } }
+        <script>
+            const dataDB = {
+                paper1: [
+                    {
+                        chapter: "২য় অধ্যায়: ভেক্টর",
+                        topics: [
+                            {
+                                name: "নদী ও নৌকা সংক্রান্ত",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 20,
+                                gh: 24,
+                                boards: "কু. বো. ২৫, ২৪, ২২, ১৯; ম. বো. ২৫, ২৪, ২৩; ঢা. বো. ২৪, ২৩; রা. বো. ২৪, ২৩, ২২; চ. বো. ২৪, ২৩, ২২, ২১, ১৭; ব. বো. ২৪; সি. বো. ২৪, ২১; দি. বো. ২৩, ২২; য. বো. ২১, ১৭",
+                            },
+                            {
+                                name: "আপেক্ষিক বেগ, বৃষ্টি পড়া",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 8,
+                                gh: 8,
+                                boards: "ম. বো. ২৫, ২২; ঢা. বো. ২৩, ২২, ১৯; সি. বো. ২২; রা. বো. ১৯, ১৭; য. বো. ১৬",
+                            },
+                            {
+                                name: "ডট ও ক্রস গুণন ও ক্ষেত্রফল সম্পর্কিত",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 28,
+                                gh: 25,
+                                boards: "কু. বো. ২৫, ২৪, ২১, ১৬; দি. বো. ২৫, ২৩, ২২, ২১, ১৬; ব. বো. ২৫, ২২, ১৯, ১৬; সি. বো. ২৫, ১৯; য. বো. ২৫, ২৪, ২৩, ২২, ১৭; ঢা. বো. ২৫, ২৪, ১৯, ১৭, ১৬; রা. বো. ২৩, ২২; ম. বো. ২৩, ২২, ২১; চ. বো. ১৯, ১৬; সকল বো. ১৮",
+                            },
+                            {
+                                name: "অবস্থান ভেক্টর ও একক ভেক্টর",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 9,
+                                gh: 9,
+                                boards: "দি. বো. ২৫; চ. বো. ২৫, ২৪; ঢা. বো. ২৫, ২২, ১৬; কু. বো. ২৪, ১৭; ম. বো. ২৪, ২২, ২১; সি. বো. ২৩; রা. বো. ২১; য. বো. ১৯; সকল বো. ১৮; ব. বো. ১৭",
+                            },
+                            {
+                                name: "উপাংশ ও অভিক্ষেপ",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 8,
+                                gh: 4,
+                                boards: "কু. বো. ২৫, ২৩, ১৭; য. বো. ২৫, ২৪, ১৯; ঢা. বো. ২৪; রা. বো. ২৪, ২১; সি. বো. ১৬",
+                            },
+                            {
+                                name: "গ্রেডিয়েন্ট, ডাইভারজেন্স, কার্ল",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 8,
+                                gh: 10,
+                                boards: "ব. বো. ২৫, ২২; সি. বো. ২৫, ২৪, ২২; য. বো. ২৫; রা. বো. ২৫, ২২; দি. বো. ২৪; চ. বো. ২২, ১৯",
+                            },
+                            {
+                                name: "লব্ধি ভেক্টর",
+                                stars: 1,
+                                starStr: "★",
+                                g: 5,
+                                gh: 6,
+                                boards: "য. বো. ২৩; কু. বো. ২২; ব. বো. ২২; দি. বো. ১৯; সকল বো. ১৭",
+                            },
+                        ],
                     },
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { family: "'Hind Siliguri', sans-serif" } } },
-                        tooltip: {
-                            callbacks: {
-                                title: function(context) {
-                                    return context[0].label.replaceAll(',', '');
-                                }
-                            }
+                    {
+                        chapter: "৩য় অধ্যায়: গতিবিদ্যা",
+                        topics: [
+                            {
+                                name: "ভূমি হতে নির্দিষ্ট কোণে নিক্ষিপ্ত প্রাস",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 19,
+                                gh: 20,
+                                boards: "ঢা. বো. ১৯, ১৭, ১৫; রা. বো. ১৯, ১৫; কু. বো. ১৯, ১৭, ১৬; চ. বো. ১৯, ১৫; ব. বো. ১৯, ১৬, ১৫; দি. বো. ১৯, ১৭, ১৬; সম্মিলিত বো. ১৮; য. বো. ১৭, ১৬, ১৫",
+                            },
+                            {
+                                name: "নির্দিষ্ট উচ্চতা হতে নিক্ষিপ্ত প্রাস",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 2,
+                                gh: 2,
+                                boards: "সি. বো. ১৯; কু. বো. ১৫",
+                            },
+                            {
+                                name: "সরলরৈখিক গতি",
+                                stars: 1,
+                                starStr: "★",
+                                g: 3,
+                                gh: 2,
+                                boards: "চ. বো. ১৭; সি. বো. ১৭; য. বো. ১৫",
+                            },
+                            {
+                                name: "বিভিন্ন লেখচিত্র সংক্রান্ত",
+                                stars: 1,
+                                starStr: "★",
+                                g: 3,
+                                gh: 3,
+                                boards: "রা. বো. ১৯, ১৭, ১৬",
+                            },
+                            {
+                                name: "অনুভূমিকভাবে নিক্ষিপ্ত প্রাস",
+                                stars: 1,
+                                starStr: "★",
+                                g: 1,
+                                gh: 3,
+                                boards: "সম্মিলিত বো. ১৮; কু. বো. ১৬, ১৫",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৪র্থ অধ্যায়: নিউটনিয়ান বলবিদ্যা",
+                        topics: [
+                            {
+                                name: "বল ও বলের ধারণা",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 2,
+                                gh: 5,
+                                boards: "ঢা. বো. ২৫, ২৩; চ. বো. ২৩; সি. বো. ১৯; য. বো. ১৭",
+                            },
+                            {
+                                name: "সংঘর্ষ ও গতির সূত্র",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 11,
+                                gh: 9,
+                                boards: "ঢা. বো. ২৫; দি. বো. ২৫; রা. বো. ২৫, ১৬; কু. বো. ২৪; সি. বো. ২৪, ২৩; ব. বো. ২১, ১৯; চ. বো. ২৩, ২২; য. বো. ১৭",
+                            },
+                            {
+                                name: "জড়তার ভ্রামক ও চক্রগতির ব্যাসার্ধ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 8,
+                                gh: 8,
+                                boards: "য. বো. ২৫, ২২, ২১; চ. বো. ২৫, ২১; দি. বো. ২৫; রা. বো. ২৫; ঢা. বো. ২১; ব. বো. ২১; সি. বো. ১৯; সম্মিলিত বো. ১৮",
+                            },
+                            {
+                                name: "টর্ক",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 3,
+                                gh: 7,
+                                boards: "ব. বো. ২৪, ২১; চ. বো. ২৪, ২৩; বো. ২৪; রা. বো. ২২; কু. বো. ২১; ঢা. বো. ১৯",
+                            },
+                            {
+                                name: "কেন্দ্রমুখী বল ও কেন্দ্রবিমুখী বল",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 4,
+                                gh: 10,
+                                boards: "ঢা. বো. ২৫, ২৪; ব. বো. ২৫, ২১; রা. বো. ২৪, ১৫; য. বো. ২৩; কু. বো. ২৩, ২২, ১৭; দি. বো. ২২, ২১; সি. বো. ২২; চ. বো. ১৫",
+                            },
+                            {
+                                name: "ব্যাংকিং কোণ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 17,
+                                gh: 25,
+                                boards: "ঢা. বো. ২৫, ২৪, ২৩, ২১, ১৮; কু. বো. ২৫, ২৩, ২১, ১৮; ব. বো. ২৫, ২৩, ২১; ম. বো. ২৩; সি. বো. ২১, ১৭, ১৬; দি. বো. ২১; চ. বো. ২১; সম্মিলিত বো. ১৮; রা. বো. ১৭",
+                            },
+                            {
+                                name: "কৌণিক গতি, কৌণিক ভরবেগ, ঘূর্ণনগতিশক্তি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 21,
+                                gh: 8,
+                                boards: "চ. বো. ২৫, ২৩, ২২, ২১, ১৯; ব. বো. ২৫, ১৭, ১৫; দি. বো. ২৫, ২৩, ২২, ২১; সি. বো. ২৩, ২১; রা. বো. ২৩, ২২, ২১; য. বো. ২৪, ২৩, ২২, ২১, ১৯; সম্মিলিত বো. ১৮; ঢা. বো. ১৭; কু. বো. ২২, ২১, ১৭",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৫ম অধ্যায়: কাজ, শক্তি ও ক্ষমতা",
+                        topics: [
+                            {
+                                name: "কাজ সংক্রান্ত",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 18,
+                                gh: 11,
+                                boards: "ঢা. বো. ২৫, ২৩, ১৯; ব. বো. ২৫, ২১; ম. বো. ২৫, ২৪, ২২, ২১; চ. বো. ২৪; রা. বো. ২৩, ২১, ১৭; য. বো. ২৪, ২২; কু. বো. ২৩; সি. বো. ২২, ২১, ১৯; দি. বো. ১৭; সম্মিলিত বো. ১৮",
+                            },
+                            {
+                                name: "শক্তির সংরক্ষণশীলতা নীতি",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 4,
+                                gh: 11,
+                                boards: "সি. বো. ২৫, ১৯; য. বো. ২৫; কু. বো. ২৪, ২২, ১৯, ১৫; ঢা. বো. ১৯, ১৬; রা. বো. ১৬; সম্মিলিত বো. ১৮",
+                            },
+                            {
+                                name: "কুয়া ও চৌবাচ্চা",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 24,
+                                gh: 23,
+                                boards: "রা. বো. ২৫, ২৪, ২২, ২১, ১৯; কু. বো. ২৫, ২১; ঢা. বো. ২৪, ২৩, ২২, ২১; য. বো. ২৪, ২২, ২১; দি. বো. ২৪, ২২, ২১; ব. বো. ২৪, ২৩; সি. বো. ২৩, ২১; চ. বো. ২১, ১৭",
+                            },
+                            {
+                                name: "বিভবশক্তি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 9,
+                                gh: 1,
+                                boards: "সি. বো. ২৫, ২২, ১৯; য. বো. ২৫; ম. বো. ২৫, ২১; কু. বো. ২৪; ব. বো. ২১",
+                            },
+                            {
+                                name: "ক্ষমতা ও কর্মদক্ষতা",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 4,
+                                gh: 7,
+                                boards: "ঢা. বো. ২৫, ১৭; ব. বো. ২৫; য. বো. ২৪; চ. বো. ২৪, ২২; রা. বো. ২১; সি. বো. ২১; ম. বো. ২১",
+                            },
+                            {
+                                name: "স্প্রিং বল দ্বারা কাজ",
+                                stars: 1,
+                                starStr: "★",
+                                g: 3,
+                                gh: 2,
+                                boards: "কু. বো. ২৪; দি. বো. ২৩; য. বো. ২৪, ২৩",
+                            },
+                            {
+                                name: "কাজ-শক্তি উপপাদ্য এবং গতিশক্তি",
+                                stars: 1,
+                                starStr: "★",
+                                g: 0,
+                                gh: 5,
+                                boards: "কু. বো. ২৩; য. বো. ২২; ম. বো. ২২; ব. বো. ২১",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৬ষ্ঠ অধ্যায়: মহাকর্ষ ও অভিকর্ষ",
+                        topics: [
+                            {
+                                name: "অভিকর্ষজ ত্বরণ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 17,
+                                gh: 13,
+                                boards: "ঢা. বো. ২৪; চ. বো. ২৪, ১৯; কু. বো. ২৪; ব. বো. ২৪, ১৯, ১৭; সি. বো. ২৪, ২২, ১৯; ম. বো. ২৪, ২৩; রা. বো. ২৩, ২২; য. বো. ২৩, ১৭; দি. বো. ২২, ১৯, ১৭",
+                            },
+                            {
+                                name: "মুক্তি বেগ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 12,
+                                gh: 16,
+                                boards: "দি. বো. ২৪, ২৩, ২২; রা. বো. ২৪, ২২; কু. বো. ২৩; য. বো. ২৩, ২২, ১৯; ব. বো. ২৩, ১৯; সি. বো. ২৩, ১৭; চ. বো. ২২, ১৯, ১৭; ম. বো. ২২; সম্মিলিত বো. ১৮",
+                            },
+                            {
+                                name: "মহাকর্ষীয় প্রাবল্য ও বিভব",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 8,
+                                gh: 2,
+                                boards: "য. বো. ২৪, ২৩; রা. বো. ২৪; কু. বো. ২২, ১৭; ব. বো. ২২; চ. বো. ১৭",
+                            },
+                            {
+                                name: "উপগ্রহ",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 3,
+                                gh: 7,
+                                boards: "সি. বো. ২৪, ১৭; য. বো. ২৪; ঢা. বো. ২২; দি. বো. ১৯, ১৭; সম্মিলিত বো. ১৮",
+                            },
+                            {
+                                name: "মহাকর্ষ ও কেপলারের সূত্র",
+                                stars: 1,
+                                starStr: "★",
+                                g: 0,
+                                gh: 0,
+                                boards: "-",
+                            },
+                            {
+                                name: "নিউটনের মহাকর্ষ সূত্র",
+                                stars: 1,
+                                starStr: "★",
+                                g: 1,
+                                gh: 2,
+                                boards: "কু. বো. ২২, ১৭; সম্মিলিত বো. ১৮; য. বো. ১৭",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৭ম অধ্যায়: পদার্থের গাঠনিক ধর্ম",
+                        topics: [
+                            {
+                                name: "স্থিতিস্থাপক গুণাঙ্ক",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 10,
+                                gh: 34,
+                                boards: "ঢা. বো. ২৫, ২৪, ২২, ১৯, ১৭, ১৬, ১৫; ব. বো. ২৫, ২৪, ২৩, ২২, ১৯, ১৫; রা. বো. ২৫, ২৪, ২৩, ১৯; চ. বো. ২৫, ২৪, ২৩, ১৯, ১৭; য. বো. ২৫, ২৩, ২২, ১৭, ১৫; সি. বো. ২৫; কু. বো. ২৫; ম. বো. ২৪, ২৩; দি. বো. ২৪, ২৩, ২২, ১৯, ১৫",
+                            },
+                            {
+                                name: "পয়সনের অনুপাত",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 18,
+                                gh: 6,
+                                boards: "রা. বো. ২৫, ২৩, ১৯; চ. বো. ২৫, ২৪, ১৯; কু. বো. ২৫, ২৪, ২২; ঢা. বো. ২৪, ২৩, ২২, ১৫; দি. বো. ২৪, ২৩, ১৫; য. বো. ২৪, ২২; সি. বো. ২৪, ২৩, ১৯; ব. বো. ২৪, ২২, ১৫; ম. বো. ২৩",
+                            },
+                            {
+                                name: "স্থিতিস্থাপক সঞ্চিত শক্তি",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 15,
+                                gh: 12,
+                                boards: "ম. বো. ২৫, ২৪; ব. বো. ২৫; য. বো. ২৫, ২৪, ২৩, ১৮, ১৫; দি. বো. ২৫, ২২, ১৯, ১৮; ঢা. বো. ২৩, ১৯, ১৮, ১৬; চ. বো. ২৩; সি. বো. ২২, ১৯, ১৮",
+                            },
+                            {
+                                name: "স্থিতিস্থাপকতা",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 5,
+                                gh: 4,
+                                boards: "রা. বো. ২৪, ২২; ব. বো. ২৪, ২৩; চ. বো. ২৩; ম. বো. ২২; ঢা. বো. ১৮; য. বো. ১৮; দি. বো. ১৮; সি. বো. ১৮",
+                            },
+                            {
+                                name: "প্রবাহী ও সান্দ্রতা গুণাঙ্ক",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 5,
+                                gh: 6,
+                                boards: "কু. বো. ১৯, ১৮, ১৭; রা. বো. ১৯; চ. বো. ১৯; ব. বো. ১৮, ১৭, ১৬; দি. বো. ১৬",
+                            },
+                            {
+                                name: "পৃষ্ঠটান ও পৃষ্ঠশক্তি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 2,
+                                gh: 1,
+                                boards: "কু. বো. ১৯, ১৭; দি. বো. ১৭",
+                            },
+                            {
+                                name: "স্পর্শকোণ ও কৈশিকতা",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 2,
+                                gh: 3,
+                                boards: "কু. বো. ১৮; চ. বো. ১৮, ১৬; ব. বো. ১৮; রা. বো. ১৬",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৮ম অধ্যায়: পর্যাবৃত্ত গতি",
+                        topics: [
+                            {
+                                name: "সরলছন্দিত গতির সমীকরণ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 17,
+                                gh: 4,
+                                boards: "ব. বো. ২৫; ঢা. বো. ২৫, ২৪, ২২; য. বো. ২৪, ২৩, ১৯; সি. বো. ২৪, ২৩; ম. বো. ২৪, ২৩; রা. বো. ২৩, ১৭; কু. বো. ২২, ২১",
+                            },
+                            {
+                                name: "সেকেন্ড দোলক সংক্রান্ত",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 21,
+                                gh: 21,
+                                boards: "ম. বো. ২৪, ২২; দি. বো. ২৪, ২২, ২১; সি. বো. ২৪, ২১; য. বো. ২৪, ২১; রা. বো. ২৪, ১৯; কু. বো. ২৪, ২২, ২১; ঢা. বো. ২২, ১৯; চ. বো. ২২; ব. বো. ২২",
+                            },
+                            {
+                                name: "স্প্রিং এর সরল ছন্দিত গতি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 8,
+                                gh: 5,
+                                boards: "চ. বো. ২৫, ২৪; য. বো. ২৪, ১৯; ম. বো. ২৪; ঢা. বো. ২২; ব. বো. ২২",
+                            },
+                            {
+                                name: "মোট শক্তি, গতিশক্তি ও বিভবশক্তি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 9,
+                                gh: 16,
+                                boards: "ম. বো. ২৫; ব. বো. ২৫, ২৪, ১৭; চ. বো. ২৫, ২৪; ঢা. বো. ২৪, ২২; য. বো. ২৪, ২৩, ২১; দি. বো. ২৪; সি. বো. ২৩, ২২; কু. বো. ২১",
+                            },
+                            {
+                                name: "সরলদোলকের গতি",
+                                stars: 1,
+                                starStr: "★",
+                                g: 5,
+                                gh: 5,
+                                boards: "রা. বো. ২৩; দি. বো. ২৩; ম. বো. ২৩; ঢা. বো. ২১, ১৭; য. বো. ২১; চ. বো. ১৯",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৯ম অধ্যায়: তরঙ্গ",
+                        topics: [
+                            {
+                                name: "অগ্রগামী তরঙ্গের সমীকরণ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 12,
+                                gh: 3,
+                                boards: "ঢা. বো. ১৯, ১৭, ১৬; রা. বো. ১৯, ১৭; ব. বো. ১৯; সি. বো. ১৯, ১৫; সম্মিলিত বো. ১৮; কু. বো. ১৭; য. বো. ১৫; চ. বো. ১৬, ১৫",
+                            },
+                            {
+                                name: "তরঙ্গের তীব্রতা ও তীব্রতা লেভেল",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 6,
+                                gh: 8,
+                                boards: "ব. বো. ১৯, ১৭, ১৬, ১৫; সি. বো. ১৯, ১৬; সম্মিলিত বো. ১৮; রা. বো. ১৫; চ. বো. ১৫",
+                            },
+                            {
+                                name: "তরঙ্গের বিভিন্ন রাশি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 7,
+                                gh: 2,
+                                boards: "কু. বো. ১৯; চ. বো. ১৯; সম্মিলিত বো. ১৮; দি. বো. ১৭, ১৫; সি. বো. ১৭; রা. বো. ১৬; য. বো. ১৬",
+                            },
+                            {
+                                name: "স্থির তরঙ্গ",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 2,
+                                gh: 5,
+                                boards: "ঢা. বো. ১৯; চ. বো. ১৯, ১৬; রা. বো. ১৯; কু. বো. ১৭; ব. বো. ১৭; সি. বো. ১৫",
+                            },
+                            {
+                                name: "বীট ও অজানা সুরশলাকার কম্পাঙ্ক নির্ণয়",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 1,
+                                gh: 9,
+                                boards: "ব. বো. ১৯, ১৭; সি. বো. ১৯, ১৭; সম্মিলিত বো. ১৮; ঢা. বো. ১৭; রা. বো. ১৫",
+                            },
+                            {
+                                name: "টানা তারে ও নলে শব্দের বেগ",
+                                stars: 1,
+                                starStr: "★",
+                                g: 2,
+                                gh: 3,
+                                boards: "চ. বো. ১৭; ব. বো. ১৭; য. বো. ১৫",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "১০ম অধ্যায়: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব",
+                        topics: [
+                            {
+                                name: "আদর্শ গ্যাস সমীকরণ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 20,
+                                gh: 20,
+                                boards: "ম. বো. ২৫, ২৪; দি. বো. ২৫, ২২, ১৯; সি. বো. ২৫, ২৪, ২৩, ২২; চ. বো. ২৫, ২২, ১৯, ১৭; রা. বো. ২৫, ২৩, ২১, ১৯; য. বো. ২৪, ২৩, ২২, ১৬; কু. বো. ২৪, ২৩, ১৯; ব. বো. ২৪, ২১, ১৭; ঢা. বো. ১৯; সকল বো. ১৮",
+                            },
+                            {
+                                name: "গ্যাসের গতিতত্ত্বের সমীকরণ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 5,
+                                gh: 11,
+                                boards: "দি. বো. ২৫, ২৩, ২২; ব. বো. ২৫, ২৪; য. বো. ২৫, ২৪, ১৯, ১৭; চ. বো. ২৫; ম. বো. ২৩; সি. বো. ২২; কু. বো. ১৭, ১৬; রা. বো. ১৬",
+                            },
+                            {
+                                name: "আপেক্ষিক আর্দ্রতা, বাষ্পচাপ ও শিশিরাঙ্ক",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 30,
+                                gh: 32,
+                                boards: "ঢা. বো. ২৫, ২৩, ২২, ২১, ১৭; দি. বো. ২৫, ২৪, ১৬; সি. বো. ২৫, ২৩, ১৭, ১৬; রা. বো. ২৪, ২২, ২১, ১৭; চ. বো. ২৪, ২৩, ২২, ১৬; য. বো. ২৩, ২২; ব. বো. ২৩, ২২, ২১, ১৬; কু. বো. ২২; ম. বো. ২২, ২১; সকল বো. ১৮",
+                            },
+                            {
+                                name: "স্বাধীনতার মাত্রা ও গ্যাসের গতিশক্তি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 14,
+                                gh: 4,
+                                boards: "ম. বো. ২৫, ২৩; সি. বো. ২৫, ২৪; য. বো. ২৫, ২৩, ২২, ১৯, ১৬; ঢা. বো. ২৩, ১৯; কু. বো. ২৩, ১৯, ১৬; দি. বো. ২৩, ১৭; রা. বো. ১৯; চ. বো. ১৭",
+                            },
+                            {
+                                name: "গড় মুক্ত পথ",
+                                stars: 1,
+                                starStr: "★",
+                                g: 0,
+                                gh: 2,
+                                boards: "দি. বো. ১৭; রা. বো. ১৬",
+                            },
+                        ],
+                    },
+                ],
+                paper2: [
+                    {
+                        chapter: "১ম অধ্যায়: তাপগতিবিদ্যা",
+                        topics: [
+                            {
+                                name: "কার্নো ইঞ্জিন ও রেফ্রিজারেটর",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 34,
+                                gh: 35,
+                                boards: "ঢা. বো. ২৫, ২২, ২১, ১৭, ১৫; কু. বো. ২৫, ২২, ১৭, ১৫; সি. বো. ২৫, ২৪, ২২; য. বো. ২৫, ২৪, ২৪, ২২, ১৯, ১৫; মা. বো. ২৫, ২৪, ২১, ১৫; দি. বো. ২৫, ২৪, ১৭; ব. বো. ২৫, ২৪; চ. বো. ২৪, ২১, ১৭, ১৬, ১৫; ব. বো. ২২, ১৫; সম্মিলিত বোর্ড ১৮",
+                            },
+                            {
+                                name: "তাপগতিবিদ্যার ১ম সূত্র",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 12,
+                                gh: 13,
+                                boards: "য. বো. ২৫; সি. বো. ২৪, ২৩, ১৭; ঢা. বো. ২৩, ২২; দি. বো. ২৩, ২১, ১৫; রা. বো. ২২, ১৯; কু. বো. ২২, ২১; চ. বো. ১৯; মা. বো. ১৭",
+                            },
+                            {
+                                name: "রুদ্ধতাপীয় প্রক্রিয়া",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 6,
+                                gh: 7,
+                                boards: "চ. বো. ২৫, ২২; ঢা. বো. ২৪, ২৩; মা. বো. ২৩, ২২, ১৮; সি. বো. ২৩; দি. বো. ২২; য. বো. ২২",
+                            },
+                            {
+                                name: "এন্ট্রপি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 7,
+                                gh: 9,
+                                boards: "কু. বো. ২৫, ২২; সি. বো. ২৫; মা. বো. ২৫, ২৪; য. বো. ২৪, ব. বো. ২৩, ১৭, ১৫; ঢা. বো. ২২; ব. বো. ২২, ১৯, ১৭; দি. বো. ২২; চ. বো. ১৯",
+                            },
+                            {
+                                name: "সমোষ্ণ প্রক্রিয়া",
+                                stars: 1,
+                                starStr: "★",
+                                g: 8,
+                                gh: 3,
+                                boards: "চ. বো. ২৫, ২২; ঢা. বো. ২৪; দি. বো. ২৪; মা. বো. ২২, ১৯; সি. বো. ২২, ১৬; ব. বো. ১৬",
+                            },
+                            {
+                                name: "মোলার তাপধারণ ক্ষমতা",
+                                stars: 1,
+                                starStr: "★",
+                                g: 2,
+                                gh: 1,
+                                boards: "কু. বো. ২৪; মা. বো. ২৩",
+                            },
+                            {
+                                name: "বিভিন্ন তাপগতীয় চলক",
+                                stars: 1,
+                                starStr: "★",
+                                g: 1,
+                                gh: 0,
+                                boards: "ব. বো. ২৫",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "২য় অধ্যায়: স্থির তড়িৎ",
+                        topics: [
+                            {
+                                name: "তড়িৎ বিভব",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 24,
+                                gh: 16,
+                                boards: "ঢা. বো. ২৫, ২৪, ২৩, ২২, ১৯, ১৮, ১৭; মা. বো. ২৫, ২৩, ২২, ১৯, ১৫; কু. বো. ২৫, ২৪, ২৩, ১৭; ব. বো. ২৪, ২৩; চ. বো. ২৫, ২৪; য. বো. ২৪, ২৩, ২২, ১৯, ১৮, ১৭, ১৬; সি. বো. ২৫, ২৪, ২৩, ১৮, ১৯, ১৫; ব. বো. ২৩, ২২, ১৬; দি. বো. ২৪, ২৩, ২২, ১৯",
+                            },
+                            {
+                                name: "তড়িৎ প্রাবল্য",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 16,
+                                gh: 15,
+                                boards: "কু. বো. ২৫, ২৪, ২৩; ঢা. বো. ২৫, ২৪, ১৮; সি. বো. ২৫, ২৩, ২২, ১৯; মা. বো. ২৫, ২৩, ১৯, ১৬; ব. বো. ২৫, ২৪, ২৩; চ. বো. ২৪, ২২, ১৭; য. বো. ২২, ১৫, ১৯, ১৮, ১৭, ১৬, ১৫; দি. বো. ১৮, ১৫; ব. বো. ১৭, ১৬",
+                            },
+                            {
+                                name: "ধারক",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 19,
+                                gh: 13,
+                                boards: "ঢা. বো. ২৪, ২৩, ১৬; মা. বো. ২৫, ২২, ১৫; য. বো. ২২; চ. বো. ২৫, ২২, ১৯; কু. বো. ২২, ১৯; ব. বো. ২২; সি. বো. ২৩; ব. বো. ২৪, ২৩; দি. বো. ২২, ১৭, ১৫",
+                            },
+                            {
+                                name: "ধারকের সমবায়",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 8,
+                                gh: 13,
+                                boards: "মা. বো. ২৪, ২২, ১৭; ব. বো. ২৫, ২৩; কু. বো. ২৩, ১৯; সি. বো. ২৫, ২৩; ব. বো. ২৩, ২২, ১৯, ১৫; দি. বো. ১৯, ১৭",
+                            },
+                            {
+                                name: "তড়িৎবল",
+                                stars: 1,
+                                starStr: "★",
+                                g: 6,
+                                gh: 16,
+                                boards: "ব. বো. ২৫; য. বো. ২৫, ২৩; দি. বো. ২৫, ২৪, ২২; চ. বো. ২৫, ১৯; ঢা. বো. ২২, ১৯, ১৭; মা. বো. ২৩; কু. বো. ১৭; সি. বো. ২৪, ২৩, ২১, ১৯, ১৭; ব. বো. ২৩",
+                            },
+                            {
+                                name: "তড়িৎ দ্বিমেরু",
+                                stars: 1,
+                                starStr: "★",
+                                g: 2,
+                                gh: 0,
+                                boards: "ঢা. বো. ২৫; য. বো. ২৩",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৩য় অধ্যায়: চল তড়িৎ",
+                        topics: [
+                            {
+                                name: "ওহমের সূত্র",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 50,
+                                gh: 40,
+                                boards: "সি. বো. ২৫, ২৪, ২৩, ২১, ১৮, ১৫; দি. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৭, ১৫; ঢা. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৭, ১৫; মা. বো. ২৫, ২৪, ২২, ২১, ১৮, ১৭, ১৬; য. বো. ২৪, ২৩, ২২, ২১; চ. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৬, ১৫; কু. বো. ২৪, ২১, ১৯, ১৮, ১৭, ১৬, ১৫; ব. বো. ২৪, ২২, ২১, ১৯, ১৮, ১৭",
+                            },
+                            {
+                                name: "হুইটস্টোন ব্রিজ ও মিটার ব্রিজ",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 6,
+                                gh: 9,
+                                boards: "ব. বো. ২৫, ২৪; ঢা. বো. ২৩; মা. বো. ২৩; য. বো. ২৪, ২৩; কু. বো. ২২; সি. বো. ২১, ১৭; ব. বো. ১৯; দি. বো. ২১",
+                            },
+                            {
+                                name: "পটেনশিওমিটার",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 5,
+                                gh: 8,
+                                boards: "ব. বো. ২৫, ২৩, ১৭; ঢা. বো. ২২, ১৬; য. বো. ২৪; চ. বো. ২১; ব. বো. ২১",
+                            },
+                            {
+                                name: "কার্শফের সূত্র",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 5,
+                                gh: 8,
+                                boards: "য. বো. ২২, ২১; চ. বো. ২৫; কু. বো. ২৩, ১৬; সি. বো. ২৫, ২৩, ২১, ১৫; ব. বো. ২৪; দি. বো. ২৪",
+                            },
+                            {
+                                name: "কোষের সমবায়",
+                                stars: 1,
+                                starStr: "★",
+                                g: 11,
+                                gh: 2,
+                                boards: "ব. বো. ২৫; দি. বো. ২৫, ১৫; ঢা. বো. ২৪, ২১, ১৫; মা. বো. ২১, ১৭; চ. বো. ১৭, ১৫; ব. বো. ১৯; সি. বো. ১৯",
+                            },
+                            {
+                                name: "রোধ ও রোধের তাপীয় সূত্র",
+                                stars: 1,
+                                starStr: "★",
+                                g: 8,
+                                gh: 15,
+                                boards: "সি. বো. ২৫, ২২, ১৯; ব. বো. ২৫, ২২, ২১; ঢা. বো. ২১; মা. বো. ২৩, ২১; য. বো. ২১; চ. বো. ২৪, ২৩, ১৭; কু. বো. ২৪, ২১, ১৯; ব. বো. ২১",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৪র্থ অধ্যায়: তড়িৎ চৌম্বক ক্রিয়া",
+                        topics: [
+                            {
+                                name: "বায়ো-স্যাভার্ট সূত্রের প্রয়োগ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 11,
+                                gh: 9,
+                                boards: "ঢা. বো., সি. বো., চ. বো. ১৯; মা. বো., সি. বো., ব. বো., চ. বো. ১৭; ঢা. বো., দি. বো., চ. বো., ব. বো. ১৬",
+                            },
+                            {
+                                name: "কুণ্ডলীর উপর টর্ক",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 4,
+                                gh: 6,
+                                boards: "ঢা. বো., য. বো., দি. বো., মা. বো. ১৭; সি. বো., য. বো. ১৬",
+                            },
+                            {
+                                name: "পরিবাহী তারের উপর চৌম্বক বল",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 3,
+                                gh: 4,
+                                boards: "মা. বো., সি. বো. ১৯; মা. বো., চ. বো., য. বো., ব. বো. ১৮; চ. বো. ১৭",
+                            },
+                            {
+                                name: "অ্যাম্পিয়ার সূত্রের উপর চৌম্বক বল",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 2,
+                                gh: 2,
+                                boards: "ঢা. বো., সি. বো., মা. বো., দি. বো. ১৮; সি. বো. ১৭",
+                            },
+                            {
+                                name: "ভূ-চুম্বকত্ব",
+                                stars: 1,
+                                starStr: "★",
+                                g: 2,
+                                gh: 1,
+                                boards: "য. বো., মা. বো. ১৫",
+                            },
+                            {
+                                name: "হল ক্রিয়া",
+                                stars: 1,
+                                starStr: "★",
+                                g: 0,
+                                gh: 0,
+                                boards: "-",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৫ম অধ্যায়: আবেশ ও পরিবর্তী প্রবাহ",
+                        topics: [
+                            {
+                                name: "দিক পরিবর্তী প্রবাহ",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 13,
+                                gh: 14,
+                                boards: "চ. বো. ১৯, ১৭, ১৬, ১৫; ব. বো. ১৯, ১৭, ১৫; সি. বো. ১৯, ১৮, ১৬",
+                            },
+                            {
+                                name: "তড়িৎ চৌম্বকীয় আবেশ",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 2,
+                                gh: 1,
+                                boards: "সি. বো. ১৯; ব. বো. ১৫",
+                            },
+                            {
+                                name: "স্বকীয় ও পারস্পরিক আবেশ",
+                                stars: 1,
+                                starStr: "★",
+                                g: 2,
+                                gh: 2,
+                                boards: "দি. বো. ১৯; মা. বো. ১৭",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৬ষ্ঠ অধ্যায়: জ্যামিতিক আলোকবিজ্ঞান",
+                        topics: [
+                            {
+                                name: "লেন্স",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 18,
+                                gh: 17,
+                                boards: "ঢা. বো. ১৯, ১৫; চ. বো. ১৯, ১৮, ১৭, ১৬",
+                            },
+                            {
+                                name: "প্রিজম",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 8,
+                                gh: 8,
+                                boards: "ঢা. বো. ১৮, ১৭; সি. বো. ১৮, ১৫",
+                            },
+                            {
+                                name: "অণুবীক্ষণ যন্ত্র",
+                                stars: 1,
+                                starStr: "★",
+                                g: 4,
+                                gh: 4,
+                                boards: "য. বো. ১৭; চ. বো. ১৬; দি. বো. ১৫",
+                            },
+                            {
+                                name: "দূরবীক্ষণ যন্ত্র",
+                                stars: 1,
+                                starStr: "★",
+                                g: 2,
+                                gh: 3,
+                                boards: "ঢা. বো. ১৯; য. বো. ১৭",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৭ম অধ্যায়: ভৌত আলোকবিজ্ঞান",
+                        topics: [
+                            {
+                                name: "আলোর ব্যতিচার",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 47,
+                                gh: 47,
+                                boards: "ঢা. বো. ২৫, ২৪, ২৩, ২২, ২১; মা. বো. ২৫, ২৩, ২২",
+                            },
+                            {
+                                name: "গ্রেটিং ও অপবর্তন",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 8,
+                                gh: 13,
+                                boards: "ঢা. বো. ২২, ১৯; মা. বো. ২৪, ২২",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৮ম অধ্যায়: আধুনিক পদার্থবিজ্ঞান",
+                        topics: [
+                            {
+                                name: "আপেক্ষিকতা",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 38,
+                                gh: 35,
+                                boards: "ঢা. বো. ২৫, ২৪, ২১, ১৭; মা. বো. ২৩, ২১",
+                            },
+                            {
+                                name: "তড়িৎ ক্রিয়া ও ডি-ব্রগলি",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 36,
+                                gh: 36,
+                                boards: "ঢা. বো. ২৫, ২৩, ২২, ১৫",
+                            },
+                            {
+                                name: "ভর-শক্তি সম্পর্ক",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 5,
+                                gh: 7,
+                                boards: "ঢা. বো. ২৫, ১৭",
+                            },
+                            {
+                                name: "এক্স-রে",
+                                stars: 1,
+                                starStr: "★",
+                                g: 1,
+                                gh: 1,
+                                boards: "কু. বো. ১৭",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "৯ম অধ্যায়: নিউক্লিয়ার পদার্থবিজ্ঞান",
+                        topics: [
+                            {
+                                name: "তেজস্ক্রিয়তা",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 43,
+                                gh: 43,
+                                boards: "মা. বো. ২৫, ২৪, ২৩",
+                            },
+                            {
+                                name: "নিউক্লিয়াসের গঠন",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 15,
+                                gh: 15,
+                                boards: "ঢা. বো. ২৫, ১৯",
+                            },
+                            {
+                                name: "ভরত্রুটি ও বন্ধনশক্তি",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 11,
+                                gh: 11,
+                                boards: "ঢা. বো. ২৩",
+                            },
+                            {
+                                name: "নিউক্লিয়ার বিক্রিয়া",
+                                stars: 1,
+                                starStr: "★",
+                                g: 2,
+                                gh: 2,
+                                boards: "চ. বো. ২৩",
+                            },
+                        ],
+                    },
+                    {
+                        chapter: "১০ম অধ্যায়: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",
+                        topics: [
+                            {
+                                name: "ট্রানজিস্টর",
+                                stars: 3,
+                                starStr: "★★★",
+                                g: 52,
+                                gh: 53,
+                                boards: "ঢা. বো. ২৫, ২৪, ২২, ২১",
+                            },
+                            {
+                                name: "বুলিয়ান অ্যালজেবরা",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 14,
+                                gh: 14,
+                                boards: "ঢা. বো. ২৩, ২১",
+                            },
+                            {
+                                name: "অর্ধপরিবাহী ও ডায়োড",
+                                stars: 1,
+                                starStr: "★",
+                                g: 9,
+                                gh: 9,
+                                boards: "ঢা. বো. ২২",
+                            },
+                            {
+                                name: "সংখ্যা পদ্ধতি",
+                                stars: 1,
+                                starStr: "★",
+                                g: 1,
+                                gh: 1,
+                                boards: "কু. বো. ২১",
+                            },
+                        ],
+                    },
+                ],
+            };
+
+            let currentPaper = "paper1";
+            let rawData = dataDB[currentPaper];
+            let overviewChartInstance = null;
+            let chapterBarChartInstance = null;
+            let currentChapterIndex = 0;
+            let currentYearFilter = "all";
+
+            function initApp() {
+                updateDashboard();
+                setupFilterListeners();
+                setupYearFilters();
+            }
+
+            function switchPaper(paperKey) {
+                currentPaper = paperKey;
+                rawData = dataDB[currentPaper];
+
+                // Update Toggle Buttons UI
+                document
+                    .getElementById("btn-paper1")
+                    .classList.remove("active");
+                document
+                    .getElementById("btn-paper2")
+                    .classList.remove("active");
+                document
+                    .getElementById(`btn-${paperKey}`)
+                    .classList.add("active");
+
+                // Reset priority filters to 'all'
+                document
+                    .querySelectorAll(".star-filter-btn")
+                    .forEach((b) => b.classList.remove("active"));
+                document
+                    .querySelector('.star-filter-btn[data-stars="all"]')
+                    .classList.add("active");
+
+                // Reset year filters to 'all'
+                document.querySelectorAll(".year-filter-btn").forEach((b) => {
+                    b.classList.remove("active", "bg-indigo-600", "text-white");
+                    b.classList.add("bg-slate-200", "text-slate-700");
+                });
+                const allYearBtn = document.querySelector(
+                    '.year-filter-btn[data-year="all"]',
+                );
+                if (allYearBtn) {
+                    allYearBtn.classList.remove(
+                        "bg-slate-200",
+                        "text-slate-700",
+                    );
+                    allYearBtn.classList.add(
+                        "active",
+                        "bg-indigo-600",
+                        "text-white",
+                    );
+                }
+                currentYearFilter = "all";
+
+                updateDashboard();
+            }
+
+            function updateDashboard() {
+                calculateOverallStats();
+                createChapterButtons();
+                loadChapterData(0);
+                renderFilteredTopics("all");
+            }
+
+            function calculateOverallStats() {
+                let totalG = 0;
+                let totalGh = 0;
+
+                rawData.forEach((chapter) => {
+                    chapter.topics.forEach((topic) => {
+                        totalG += topic.g;
+                        totalGh += topic.gh;
+                    });
+                });
+
+                document.getElementById("total-g-stat").innerText = totalG;
+                document.getElementById("total-gh-stat").innerText = totalGh;
+
+                const ctx = document
+                    .getElementById("overviewChart")
+                    .getContext("2d");
+
+                if (overviewChartInstance) {
+                    overviewChartInstance.destroy();
+                }
+
+                overviewChartInstance = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        labels: [
+                            "'গ' প্রশ্ন (প্রয়োগ)",
+                            "'ঘ' প্রশ্ন (উচ্চতর দক্ষতা)",
+                        ],
+                        datasets: [
+                            {
+                                data: [totalG, totalGh],
+                                backgroundColor: ["#4f46e5", "#f59e0b"],
+                                borderWidth: 0,
+                                hoverOffset: 4,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                                labels: {
+                                    font: {
+                                        family: "'Noto Sans Bengali', sans-serif",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                });
+            }
+
+            function createChapterButtons() {
+                const container = document.getElementById("chapter-buttons");
+                container.innerHTML = "";
+                rawData.forEach((chapter, index) => {
+                    const btn = document.createElement("button");
+                    const shortName = chapter.chapter.split(":")[0];
+                    btn.className = `tab-btn px-4 py-2 border border-slate-300 rounded-full text-sm font-medium ${index === 0 ? "active" : "text-slate-600 hover:bg-slate-100"}`;
+                    btn.innerText = shortName;
+                    btn.onclick = () => {
+                        document.querySelectorAll(".tab-btn").forEach((b) => {
+                            b.classList.remove("active");
+                            b.classList.add(
+                                "text-slate-600",
+                                "hover:bg-slate-100",
+                            );
+                        });
+                        btn.classList.add("active");
+                        btn.classList.remove(
+                            "text-slate-600",
+                            "hover:bg-slate-100",
+                        );
+                        loadChapterData(index);
+                    };
+                    container.appendChild(btn);
+                });
+            }
+
+            function loadChapterData(index) {
+                currentChapterIndex = index;
+                const chapter = rawData[index];
+                document.getElementById("current-chapter-title").innerText =
+                    chapter.chapter;
+
+                const labels = chapter.topics.map((t) => t.name);
+                const gData = chapter.topics.map((t) => t.g);
+                const ghData = chapter.topics.map((t) => t.gh);
+
+                if (chapterBarChartInstance) {
+                    chapterBarChartInstance.destroy();
+                }
+
+                const ctx = document
+                    .getElementById("chapterBarChart")
+                    .getContext("2d");
+                chapterBarChartInstance = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "'গ' প্রশ্ন",
+                                data: gData,
+                                backgroundColor: "#6366f1",
+                                borderRadius: 4,
+                            },
+                            {
+                                label: "'ঘ' প্রশ্ন",
+                                data: ghData,
+                                backgroundColor: "#fbbf24",
+                                borderRadius: 4,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: "#e2e8f0" },
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: {
+                                    font: {
+                                        family: "'Noto Sans Bengali', sans-serif",
+                                        size: 11,
+                                    },
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    callback: function (value) {
+                                        const label = this.getLabelForValue(value);
+                                        const isMobile = window.innerWidth < 640;
+                                        if (isMobile) {
+                                            // মোবাইলে এক লাইনে দেখানোর জন্য ট্রাঙ্কেট করা
+                                            return label.length > 12 ? label.substring(0, 12) + "..." : label;
+                                        } else {
+                                            // বড় স্ক্রিনে মাল্টি-লাইনে দেখানোর জন্য
+                                            return label.length > 16 ? (label.match(/.{1,16}(\s|$)/g) || label) : label;
+                                        }
+                                    },
+                                },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                position: "top",
+                                labels: {
+                                    font: {
+                                        family: "'Noto Sans Bengali', sans-serif",
+                                    },
+                                },
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: function (context) {
+                                        return context[0].label;
+                                    },
+                                },
+                            },
+                        },
+                    },
+                });
+
+                renderChapterTable();
+            }
+
+            // Logic to extract relevant boards for the selected year
+            function filterBoardString(boardString, targetYear) {
+                if (targetYear === "all" || !boardString || boardString === "-")
+                    return boardString;
+
+                let parts = boardString.split(";");
+                let result = [];
+
+                for (let part of parts) {
+                    part = part.trim();
+                    // Find index of first digit to split Board Name and Years
+                    const firstDigitIdx = part.search(/[0-9০-৯]/);
+
+                    if (firstDigitIdx !== -1) {
+                        const boardName = part
+                            .substring(0, firstDigitIdx)
+                            .trim();
+                        const yearsStr = part.substring(firstDigitIdx);
+                        // Split the comma separated years
+                        const years = yearsStr.split(",").map((y) => y.trim());
+
+                        // If the target year exists in the array of years for this board
+                        if (years.includes(targetYear)) {
+                            result.push(boardName + " " + targetYear);
                         }
                     }
                 }
-            });
-
-            renderChapterTable();
-        }
-
-        // Logic to extract relevant boards for the selected year
-        function filterBoardString(boardString, targetYear) {
-            if (targetYear === 'all' || !boardString || boardString === '-') return boardString;
-            
-            let parts = boardString.split(';');
-            let result = [];
-            
-            for (let part of parts) {
-                part = part.trim();
-                // Find index of first digit to split Board Name and Years
-                const firstDigitIdx = part.search(/[0-9০-৯]/);
-                
-                if (firstDigitIdx !== -1) {
-                    const boardName = part.substring(0, firstDigitIdx).trim();
-                    const yearsStr = part.substring(firstDigitIdx);
-                    // Split the comma separated years
-                    const years = yearsStr.split(',').map(y => y.trim());
-                    
-                    // If the target year exists in the array of years for this board
-                    if (years.includes(targetYear)) {
-                        result.push(boardName + " " + targetYear);
-                    }
-                }
+                return result.length > 0 ? result.join("; ") : "-";
             }
-            return result.length > 0 ? result.join('; ') : '-';
-        }
 
-        function renderChapterTable() {
-            const chapter = rawData[currentChapterIndex];
-            const tbody = document.getElementById('chapter-table-body');
-            tbody.innerHTML = '';
-            
-            chapter.topics.forEach(topic => {
-                const filteredBoards = filterBoardString(topic.boards, currentYearFilter);
-                
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition-colors";
-                tr.innerHTML = `
+            function renderChapterTable() {
+                const chapter = rawData[currentChapterIndex];
+                const tbody = document.getElementById("chapter-table-body");
+                tbody.innerHTML = "";
+
+                chapter.topics.forEach((topic) => {
+                    const filteredBoards = filterBoardString(
+                        topic.boards,
+                        currentYearFilter,
+                    );
+
+                    const tr = document.createElement("tr");
+                    tr.className = "hover:bg-slate-50 transition-colors";
+                    tr.innerHTML = `
                     <td class="px-6 py-4 text-sm font-medium text-slate-900">${topic.name}</td>
                     <td class="px-6 py-4 text-center text-sm text-amber-500 text-lg">${topic.starStr}</td>
                     <td class="px-6 py-4 text-center text-sm text-slate-600 font-semibold">${topic.g}</td>
                     <td class="px-6 py-4 text-center text-sm text-slate-600 font-semibold">${topic.gh}</td>
-                    <td class="px-6 py-4 text-sm ${filteredBoards === '-' ? 'text-slate-300' : 'text-slate-500'} font-medium whitespace-normal min-w-[200px] leading-relaxed">${filteredBoards}</td>
+                    <td class="px-6 py-4 text-sm ${filteredBoards === "-" ? "text-slate-300" : "text-slate-500"} font-medium whitespace-normal min-w-[200px] leading-relaxed">${filteredBoards}</td>
                 `;
-                tbody.appendChild(tr);
-            });
-        }
+                    tbody.appendChild(tr);
+                });
+            }
 
-        function setupYearFilters() {
-            document.querySelectorAll('.year-filter-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    // Update active state
-                    document.querySelectorAll('.year-filter-btn').forEach(b => {
-                        b.classList.remove('active', 'bg-indigo-600', 'text-white');
-                        b.classList.add('bg-slate-200', 'text-slate-700');
+            function setupYearFilters() {
+                document.querySelectorAll(".year-filter-btn").forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                        // Update active state
+                        document
+                            .querySelectorAll(".year-filter-btn")
+                            .forEach((b) => {
+                                b.classList.remove(
+                                    "active",
+                                    "bg-indigo-600",
+                                    "text-white",
+                                );
+                                b.classList.add(
+                                    "bg-slate-200",
+                                    "text-slate-700",
+                                );
+                            });
+
+                        const target = e.target;
+                        target.classList.remove(
+                            "bg-slate-200",
+                            "text-slate-700",
+                        );
+                        target.classList.add(
+                            "active",
+                            "bg-indigo-600",
+                            "text-white",
+                        );
+
+                        // Get data-year attribute and render table again
+                        currentYearFilter = target.dataset.year;
+                        renderChapterTable();
                     });
-                    
-                    const target = e.target;
-                    target.classList.remove('bg-slate-200', 'text-slate-700');
-                    target.classList.add('active', 'bg-indigo-600', 'text-white');
-                    
-                    // Get data-year attribute and render table again
-                    currentYearFilter = target.dataset.year;
-                    renderChapterTable();
                 });
-            });
-        }
+            }
 
-        function setupFilterListeners() {
-            document.querySelectorAll('.star-filter-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.star-filter-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    renderFilteredTopics(e.target.dataset.stars);
+            function setupFilterListeners() {
+                document.querySelectorAll(".star-filter-btn").forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                        document
+                            .querySelectorAll(".star-filter-btn")
+                            .forEach((b) => b.classList.remove("active"));
+                        e.target.classList.add("active");
+                        renderFilteredTopics(e.target.dataset.stars);
+                    });
                 });
-            });
-        }
+            }
 
-        function renderFilteredTopics(filterValue) {
-            const tbody = document.getElementById('filtered-topics-body');
-            const noResultsMsg = document.getElementById('no-results-msg');
-            tbody.innerHTML = '';
-            let count = 0;
+            function renderFilteredTopics(filterValue) {
+                const tbody = document.getElementById("filtered-topics-body");
+                const noResultsMsg = document.getElementById("no-results-msg");
+                tbody.innerHTML = "";
+                let count = 0;
 
-            rawData.forEach(chapter => {
-                chapter.topics.forEach(topic => {
-                    if (filterValue === 'all' || topic.stars.toString() === filterValue) {
-                        count++;
-                        const totalQ = topic.g + topic.gh;
-                        const tr = document.createElement('tr');
-                        tr.className = "hover:bg-slate-50 transition-colors";
-                        tr.innerHTML = `
-                            <td class="px-6 py-4 text-sm text-slate-600 font-medium">${chapter.chapter.split(':')[0]}</td>
+                rawData.forEach((chapter) => {
+                    chapter.topics.forEach((topic) => {
+                        if (
+                            filterValue === "all" ||
+                            topic.stars.toString() === filterValue
+                        ) {
+                            count++;
+                            const totalQ = topic.g + topic.gh;
+                            const tr = document.createElement("tr");
+                            tr.className =
+                                "hover:bg-slate-50 transition-colors";
+                            tr.innerHTML = `
+                            <td class="px-6 py-4 text-sm text-slate-600 font-medium">${chapter.chapter.split(":")[0]}</td>
                             <td class="px-6 py-4 text-sm text-slate-900 font-semibold">${topic.name}</td>
                             <td class="px-6 py-4 text-center text-sm text-amber-500 text-lg">${topic.starStr}</td>
                             <td class="px-6 py-4 text-center text-sm text-indigo-600 font-bold">${totalQ}</td>
                         `;
-                        tbody.appendChild(tr);
-                    }
+                            tbody.appendChild(tr);
+                        }
+                    });
                 });
-            });
 
-            if(count === 0) {
-                tbody.parentElement.classList.add('hide');
-                noResultsMsg.classList.remove('hide');
-            } else {
-                tbody.parentElement.classList.remove('hide');
-                noResultsMsg.classList.add('hide');
+                if (count === 0) {
+                    tbody.parentElement.classList.add("hide");
+                    noResultsMsg.classList.remove("hide");
+                } else {
+                    tbody.parentElement.classList.remove("hide");
+                    noResultsMsg.classList.add("hide");
+                }
             }
-        }
 
-        // Initialize App on load
-        window.onload = initApp;
-
-    </script>
-</body>
+            // Initialize App on load
+            window.onload = initApp;
+        </script>
+    </body>
 </html>
 
 <!-- 
