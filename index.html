@@ -145,56 +145,49 @@
                 </h2>
                 <p class="text-slate-600 mb-6 text-lg leading-relaxed">
                     এই অংশে নির্বাচিত পত্রের সিলেবাসের উপর বিগত বছরগুলোতে আসা
-                    সৃজনশীল প্রশ্নের 'গ' (প্রয়োগমূলক) এবং 'ঘ' (উচ্চতর দক্ষতা)
-                    অংশের একটি তুলনামূলক চিত্র তুলে ধরা হয়েছে। এর মাধ্যমে আপনি
-                    বুঝতে পারবেন বোর্ড পরীক্ষায় কোন ধরনের প্রশ্ন বেশি ফোকাস করা
-                    হয়।
+                    সৃজনশীল প্রশ্নের অধ্যায়ভিত্তিক বন্টন দেখানো হয়েছে।
+                    ২০২১-২০২৫ সালের শর্ট সিলেবাসের প্রশ্ন এবং এর পূর্ববর্তী ফুল
+                    সিলেবাসের প্রশ্নগুলোর দুটি আলাদা গ্রাফ তুলনা করে আপনি বুঝতে
+                    পারবেন বর্তমান প্যাটার্নে কোন অধ্যায়গুলো বেশি গুরুত্বপূর্ণ।
                 </p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="space-y-6">
-                        <div
-                            class="bg-indigo-50 p-6 rounded-lg border border-indigo-100 flex items-center justify-between transition-all hover:shadow-md"
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <!-- Left Chart: 2021-2025 -->
+                    <div
+                        class="bg-indigo-50 p-6 rounded-lg border border-indigo-100 flex flex-col items-center shadow-sm"
+                    >
+                        <h3
+                            class="text-lg font-bold text-indigo-900 mb-1 text-center"
                         >
-                            <div>
-                                <p
-                                    class="text-sm text-indigo-600 font-semibold uppercase tracking-wide"
-                                >
-                                    সর্বমোট 'গ' প্রশ্ন
-                                </p>
-                                <p
-                                    class="text-4xl font-bold text-indigo-900 mt-1"
-                                    id="total-g-stat"
-                                >
-                                    0
-                                </p>
-                            </div>
-                            <div class="text-4xl">📊</div>
-                        </div>
-                        <div
-                            class="bg-amber-50 p-6 rounded-lg border border-amber-100 flex items-center justify-between transition-all hover:shadow-md"
-                        >
-                            <div>
-                                <p
-                                    class="text-sm text-amber-700 font-semibold uppercase tracking-wide"
-                                >
-                                    সর্বমোট 'ঘ' প্রশ্ন
-                                </p>
-                                <p
-                                    class="text-4xl font-bold text-amber-900 mt-1"
-                                    id="total-gh-stat"
-                                >
-                                    0
-                                </p>
-                            </div>
-                            <div class="text-4xl">📈</div>
+                            শর্ট সিলেবাস (২০২১ - ২০২৫)
+                        </h3>
+                        <p class="text-sm text-indigo-700 font-semibold mb-4">
+                            মোট বোর্ড প্রশ্ন:
+                            <span id="total-recent-stat" class="text-xl"
+                                >0</span
+                            >
+                        </p>
+                        <div class="chart-container h-72 w-full !p-2">
+                            <canvas id="recentEraChart"></canvas>
                         </div>
                     </div>
 
+                    <!-- Right Chart: Before 2021 -->
                     <div
-                        class="chart-container h-64 md:h-80 w-full max-w-sm mx-auto"
+                        class="bg-amber-50 p-6 rounded-lg border border-amber-100 flex flex-col items-center shadow-sm"
                     >
-                        <canvas id="overviewChart"></canvas>
+                        <h3
+                            class="text-lg font-bold text-amber-900 mb-1 text-center"
+                        >
+                            ফুল সিলেবাসে (২০২০ এর পূর্বে)
+                        </h3>
+                        <p class="text-sm text-amber-700 font-semibold mb-4">
+                            মোট বোর্ড প্রশ্ন:
+                            <span id="total-old-stat" class="text-xl">0</span>
+                        </p>
+                        <div class="chart-container h-72 w-full !p-2">
+                            <canvas id="oldEraChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -333,6 +326,18 @@
                                             >
                                                 ১৭
                                             </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="১৬"
+                                            >
+                                                ১৬
+                                            </button>
+                                            <button
+                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
+                                                data-year="১৫"
+                                            >
+                                                ১৫
+                                            </button>
                                         </div>
                                     </div>
                                 </th>
@@ -438,10 +443,7 @@
         <footer
             class="bg-slate-800 text-slate-300 py-8 text-center mt-12 border-t-4 border-indigo-600"
         >
-            <p class="text-sm">
-                ডেটা সোর্স: বোর্ড প্রশ্ন বিশ্লেষণ রিপোর্ট | প্রস্তুতকৃত
-                ড্যাশবোর্ড
-            </p>
+            <p class="text-sm">Ⓒ শরিয়াতুল্লাহ, BUET CE</p>
         </footer>
 
         <script>
@@ -943,7 +945,7 @@
                                 starStr: "★★★",
                                 g: 34,
                                 gh: 35,
-                                boards: "ঢা. বো. ২৫, ২২, ২১, ১৭, ১৫; কু. বো. ২৫, ২২, ১৭, ১৫; সি. বো. ২৫, ২৪, ২২; য. বো. ২৫, ২৪, ২৪, ২২, ১৯, ১৫; মা. বো. ২৫, ২৪, ২১, ১৫; দি. বো. ২৫, ২৪, ১৭; ব. বো. ২৫, ২৪; চ. বো. ২৪, ২১, ১৭, ১৬, ১৫; ব. বো. ২২, ১৫; সম্মিলিত বোর্ড ১৮",
+                                boards: "ঢা. বো. ২৫, ২২, ২১, ১৭, ১৫; কু. বো. ২৫, ২২, ১৭, ১৫; সি. বো. ২৫, ২৪, ২২; য. বো. ২৫, ২৪, ২২, ১৯, ১৫; রা. বো. ২৫, ২৪, ২১, ১৫; দি. বো. ২৫, ২৪, ১৭; ম. বো. ২৫, ২৪; চ. বো. ২৪, ২১, ১৭, ১৬, ১৫; ব. বো. ২২, ۱۵; সম্মিলিত বোর্ড ১৮",
                             },
                             {
                                 name: "তাপগতিবিদ্যার ১ম সূত্র",
@@ -951,15 +953,15 @@
                                 starStr: "★★",
                                 g: 12,
                                 gh: 13,
-                                boards: "য. বো. ২৫; সি. বো. ২৪, ২৩, ১৭; ঢা. বো. ২৩, ২২; দি. বো. ২৩, ২১, ১৫; রা. বো. ২২, ১৯; কু. বো. ২২, ২১; চ. বো. ১৯; মা. বো. ১৭",
+                                boards: "ব. বো. ২৫; সি. বো. ২৪, ২৩, ১৭; ঢা. বো. ২৩, ২২; দি. বো. ২৩, ২১, ১৫; য. বো. ২২, ১৯; কু. বো. ২২, ২১; চ. বো. ১৯; রা. বো. ১৭",
                             },
                             {
-                                name: "রুদ্ধতাপীয় প্রক্রিয়া",
+                                name: "কৃতকাজ নির্ণয়",
                                 stars: 2,
                                 starStr: "★★",
                                 g: 6,
                                 gh: 7,
-                                boards: "চ. বো. ২৫, ২২; ঢা. বো. ২৪, ২৩; মা. বো. ২৩, ২২, ১৮; সি. বো. ২৩; দি. বো. ২২; য. বো. ২২",
+                                boards: "চ. বো. ২৫, ২২; ঢা. বো. ২৪, ২৩; রা. বো. ২৩, ২২, ১৮; সি. বো. ২৩; দি. বো. ২২; য. বো. ২২",
                             },
                             {
                                 name: "এন্ট্রপি",
@@ -967,15 +969,15 @@
                                 starStr: "★★",
                                 g: 7,
                                 gh: 9,
-                                boards: "কু. বো. ২৫, ২২; সি. বো. ২৫; মা. বো. ২৫, ২৪; য. বো. ২৪, ব. বো. ২৩, ১৭, ১৫; ঢা. বো. ২২; ব. বো. ২২, ১৯, ১৭; দি. বো. ২২; চ. বো. ১৯",
+                                boards: "কু. বো. ২৫, ২২; সি. বো. ২৫; রা. বো. ২৫, ২৪; ম. বো. ২৪; ব. বো. ২৩, ১৭, ১৫; ঢা. বো. ২২; য. বো. ২২, ১৯; দি. বো. ২২; চ. বো. ১৯",
                             },
                             {
-                                name: "সমোষ্ণ প্রক্রিয়া",
+                                name: "রুদ্ধতাপীয় প্রক্রিয়া",
                                 stars: 1,
                                 starStr: "★",
                                 g: 8,
                                 gh: 3,
-                                boards: "চ. বো. ২৫, ২২; ঢা. বো. ২৪; দি. বো. ২৪; মা. বো. ২২, ১৯; সি. বো. ২২, ১৬; ব. বো. ১৬",
+                                boards: "চ. বো. ২৫, ২২; ঢা. বো. ২৪; দি. বো. ২৪; রা. বো. ২২, ১৯; সি. বো. ২২, ১৬; য. বো. ১৬",
                             },
                             {
                                 name: "মোলার তাপধারণ ক্ষমতা",
@@ -983,10 +985,10 @@
                                 starStr: "★",
                                 g: 2,
                                 gh: 1,
-                                boards: "কু. বো. ২৪; মা. বো. ২৩",
+                                boards: "কু. বো. ২৪; রা. বো. ২৩",
                             },
                             {
-                                name: "বিভিন্ন তাপগতীয় চলক",
+                                name: "বিভিন্ন তাপমাত্রার স্কেল",
                                 stars: 1,
                                 starStr: "★",
                                 g: 1,
@@ -1004,15 +1006,15 @@
                                 starStr: "★★★",
                                 g: 24,
                                 gh: 16,
-                                boards: "ঢা. বো. ২৫, ২৪, ২৩, ২২, ১৯, ১৮, ১৭; মা. বো. ২৫, ২৩, ২২, ১৯, ১৫; কু. বো. ২৫, ২৪, ২৩, ১৭; ব. বো. ২৪, ২৩; চ. বো. ২৫, ২৪; য. বো. ২৪, ২৩, ২২, ১৯, ১৮, ১৭, ১৬; সি. বো. ২৫, ২৪, ২৩, ১৮, ১৯, ১৫; ব. বো. ২৩, ২২, ১৬; দি. বো. ২৪, ২৩, ২২, ১৯",
+                                boards: "ঢা. বো. ২৫, ২৪, ২৩, ২২, ১৯, ১৮, ১৫; রা. বো. ২৫, ২৩, ২২, ১৯, ১৫; কু. বো. ২৫, ২৪, ২৩, ১৭; ম. বো. ২৪, ২৩; চ. বো. ২৫, ২৪; য. বো. ২৩, ২২, ১৯, ১৮, ১৭, ১৬; সি. বো. ২৫, ২৪, ২৩, ১৮, ১৯, ১৫; ব. বো. ২৫, ২২, ১৬; দি. বো. ২৪, ২৩, ২২, ১৯, ১৭",
                             },
                             {
                                 name: "তড়িৎ প্রাবল্য",
                                 stars: 3,
                                 starStr: "★★★",
-                                g: 16,
+                                g: 36,
                                 gh: 15,
-                                boards: "কু. বো. ২৫, ২৪, ২৩; ঢা. বো. ২৫, ২৪, ১৮; সি. বো. ২৫, ২৩, ২২, ১৯; মা. বো. ২৫, ২৩, ১৯, ১৬; ব. বো. ২৫, ২৪, ২৩; চ. বো. ২৪, ২২, ১৭; য. বো. ২২, ১৫, ১৯, ১৮, ১৭, ১৬, ১৫; দি. বো. ১৮, ১৫; ব. বো. ১৭, ১৬",
+                                boards: "কু. বো. ২৫, ২৪, ২৩; ঢা. বো. ২৫, ২৪, ১৮; সি. বো. ২৫, ২৩, ২২, ১৯; রা. বো. ২৫, ২৩, ১৯, ১৬; ব. বো. ২৫, ২৪, ২৩; চ. বো. ২৪, ২২, ১৯, ১৭; য. বো. ২২, ১৫, ১৯, ১৮, ১৭, ১৬, ১৫; দি. বো. ১৮, ১৫; ব. বো. ১৭, ১৬",
                             },
                             {
                                 name: "ধারক",
@@ -1020,15 +1022,15 @@
                                 starStr: "★★★",
                                 g: 19,
                                 gh: 13,
-                                boards: "ঢা. বো. ২৪, ২৩, ১৬; মা. বো. ২৫, ২২, ১৫; য. বো. ২২; চ. বো. ২৫, ২২, ১৯; কু. বো. ২২, ১৯; ব. বো. ২২; সি. বো. ২৩; ব. বো. ২৪, ২৩; দি. বো. ২২, ১৭, ১৫",
+                                boards: "ঢা. বো. ২৪, ২৩, ১৬; রা. বো. ২৫, ২২, ১৫; য. বো. ২৫, ২২; চ. বো. ২৫, ২২, ১৯; কু. বো. ২২, ১৯; ব. বো. ২৫, ২২, ১৭; সি. বো. ২৩; ব. বো. ২৪, ২৩; দি. বো. ২২, ১৭, ১৫",
                             },
                             {
                                 name: "ধারকের সমবায়",
                                 stars: 2,
                                 starStr: "★★",
                                 g: 8,
-                                gh: 13,
-                                boards: "মা. বো. ২৪, ২২, ১৭; ব. বো. ২৫, ২৩; কু. বো. ২৩, ১৯; সি. বো. ২৫, ২৩; ব. বো. ২৩, ২২, ১৯, ১৫; দি. বো. ১৯, ১৭",
+                                gh: 10,
+                                boards: "রা. বো. ২৪, ২২, ১৭; ম. বো. ২৫; কু. বো. ২৩, ১৯; সি. বো. ২৫, ২৩; ব. বো. ২৩, ২২, ১৯, ১৫; দি. বো. ১৯, ১৭",
                             },
                             {
                                 name: "তড়িৎবল",
@@ -1036,7 +1038,7 @@
                                 starStr: "★",
                                 g: 6,
                                 gh: 16,
-                                boards: "ব. বো. ২৫; য. বো. ২৫, ২৩; দি. বো. ২৫, ২৪, ২২; চ. বো. ২৫, ১৯; ঢা. বো. ২২, ১৯, ১৭; মা. বো. ২৩; কু. বো. ১৭; সি. বো. ২৪, ২৩, ২১, ১৯, ১৭; ব. বো. ২৩",
+                                boards: "ব. বো. ২৫; য. বো. ২৫, ২৩; দি. বো. ২৫, ২৪, ২২; চ. বো. ২৫, ১৯; ঢা. বো. ২২, ১৯, ১৭; রা. বো. ২১; কু. বো. ১৭; সি. বো. ২৪, ২৩, ২১, ১৯, ১৭; ব. বো. ২৩",
                             },
                             {
                                 name: "তড়িৎ দ্বিমেরু",
@@ -1057,7 +1059,15 @@
                                 starStr: "★★★",
                                 g: 50,
                                 gh: 40,
-                                boards: "সি. বো. ২৫, ২৪, ২৩, ২১, ১৮, ১৫; দি. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৭, ১৫; ঢা. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৭, ১৫; মা. বো. ২৫, ২৪, ২২, ২১, ১৮, ১৭, ১৬; য. বো. ২৪, ২৩, ২২, ২১; চ. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৬, ১৫; কু. বো. ২৪, ২১, ১৯, ১৮, ১৭, ১৬, ১৫; ব. বো. ২৪, ২২, ২১, ১৯, ১৮, ১৭",
+                                boards: "সি. বো. ২৫, ২৪, ২৩, ২১, ১৮, ১৫; দি. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৭, ১৫; ঢা. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৭, ১৫; রা. বো. ২৫, ২৪, ২২, ২১, ১৮, ১৭, ১৬; ম. বো. ২৪, ২৩, ২২, ২১; চ. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৮, ১৬, ১৫; কু. বো. ২৪, ২১, ১৯, ১৮, ১৭, ১৬, ১৫; য. বো. ২৪, ২২, ২১, ১৯, ১৮, ১৭; ব. বো. ২৪, ২৩, ২২, ১৮, ১৭",
+                            },
+                            {
+                                name: "শান্টের সূত্র",
+                                stars: 2,
+                                starStr: "★★",
+                                g: 5,
+                                gh: 8,
+                                boards: "য. বো. ২২, ২১; চ. বো. ২৫; কু. বো. ২৩, ১৬; সি. বো. ২৫, ২৩, ২১, ১৫; ব. বো. ২৪; দি. বো. ২৪",
                             },
                             {
                                 name: "হুইটস্টোন ব্রিজ ও মিটার ব্রিজ",
@@ -1065,7 +1075,7 @@
                                 starStr: "★★",
                                 g: 6,
                                 gh: 9,
-                                boards: "ব. বো. ২৫, ২৪; ঢা. বো. ২৩; মা. বো. ২৩; য. বো. ২৪, ২৩; কু. বো. ২২; সি. বো. ২১, ১৭; ব. বো. ১৯; দি. বো. ২১",
+                                boards: "ব. বো. ২৫, ২৪; ঢা. বো. ২৩; রা. বো. ২৩; য. বো. ২৪, ২৩; কু. বো. ২২; সি. বো. ২১, ১৭; ব. বো. ১৯; দি. বো. ২১",
                             },
                             {
                                 name: "পটেনশিওমিটার",
@@ -1076,12 +1086,12 @@
                                 boards: "ব. বো. ২৫, ২৩, ১৭; ঢা. বো. ২২, ১৬; য. বো. ২৪; চ. বো. ২১; ব. বো. ২১",
                             },
                             {
-                                name: "কার্শফের সূত্র",
-                                stars: 2,
-                                starStr: "★★",
-                                g: 5,
-                                gh: 8,
-                                boards: "য. বো. ২২, ২১; চ. বো. ২৫; কু. বো. ২৩, ১৬; সি. বো. ২৫, ২৩, ২১, ১৫; ব. বো. ২৪; দি. বো. ২৪",
+                                name: "রোধ ও রোধের তাপমাত্রিক গুণাঙ্ক",
+                                stars: 1,
+                                starStr: "★",
+                                g: 8,
+                                gh: 15,
+                                boards: "সি. বো. ২৫, ২২, ১৯; ব. বো. ২৫, ২২, ২১; ঢা. বো. ২১; রা. বো. ২৩, ২১; ম. বো. ২১; চ. বো. ২৪, ২৩, ১৭; কু. বো. ২৪, ২১, ১৯; ব. বো. ২১",
                             },
                             {
                                 name: "কোষের সমবায়",
@@ -1089,20 +1099,13 @@
                                 starStr: "★",
                                 g: 11,
                                 gh: 2,
-                                boards: "ব. বো. ২৫; দি. বো. ২৫, ১৫; ঢা. বো. ২৪, ২১, ১৫; মা. বো. ২১, ১৭; চ. বো. ১৭, ১৫; ব. বো. ১৯; সি. বো. ১৯",
-                            },
-                            {
-                                name: "রোধ ও রোধের তাপীয় সূত্র",
-                                stars: 1,
-                                starStr: "★",
-                                g: 8,
-                                gh: 15,
-                                boards: "সি. বো. ২৫, ২২, ১৯; ব. বো. ২৫, ২২, ২১; ঢা. বো. ২১; মা. বো. ২৩, ২১; য. বো. ২১; চ. বো. ২৪, ২৩, ১৭; কু. বো. ২৪, ২১, ১৯; ব. বো. ২১",
+                                boards: "ব. বো. ২৫; দি. বো. ২৫, ১৫; ঢা. বো. ২৪, ২১, ১৫; রা. বো. ২১, ১৭; চ. বো. ১৭, ১৫; ব. বো. ১৯; সি. বো. ১৭",
                             },
                         ],
                     },
                     {
-                        chapter: "৪র্থ অধ্যায়: তড়িৎ চৌম্বক ক্রিয়া",
+                        chapter:
+                            "৪র্থ অধ্যায়: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চুম্বকত্ব",
                         topics: [
                             {
                                 name: "বায়ো-স্যাভার্ট সূত্রের প্রয়োগ",
@@ -1110,7 +1113,7 @@
                                 starStr: "★★★",
                                 g: 11,
                                 gh: 9,
-                                boards: "ঢা. বো., সি. বো., চ. বো. ১৯; মা. বো., সি. বো., ব. বো., চ. বো. ১৭; ঢা. বো., দি. বো., চ. বো., ব. বো. ১৬",
+                                boards: "ঢা. বো., সি. বো., চ. বো. ১৯; রা. বো. ২৫, সি. বো., ব. বো., চ. বো. ১৭; ঢা. বো., দি. বো., চ. বো., ব. বো. ১৫; ঢা. বো., চ. বো., ব. বো., সি. বো. ১৬; ঢা. বো., চ. বো. ১৫",
                             },
                             {
                                 name: "কুণ্ডলীর উপর টর্ক",
@@ -1118,7 +1121,7 @@
                                 starStr: "★★★",
                                 g: 4,
                                 gh: 6,
-                                boards: "ঢা. বো., য. বো., দি. বো., মা. বো. ১৭; সি. বো., য. বো. ১৬",
+                                boards: "ঢা. বো., ব. বো., দি. বো., রা. বো. ১৫; ব. বো. ১৭; সি. বো., ব. বো. ১৬",
                             },
                             {
                                 name: "পরিবাহী তারের উপর চৌম্বক বল",
@@ -1126,23 +1129,23 @@
                                 starStr: "★★★",
                                 g: 3,
                                 gh: 4,
-                                boards: "মা. বো., সি. বো. ১৯; মা. বো., চ. বো., য. বো., ব. বো. ১৮; চ. বো. ১৭",
+                                boards: "রা. বো., সি. বো. ১৯; রা. বো., চ. বো., ব. বো., ব. বো. ১৮; চ. বো. ১৭; ঢা. বো., চ. বো. ১৬",
                             },
                             {
-                                name: "অ্যাম্পিয়ার সূত্রের উপর চৌম্বক বল",
+                                name: "বৃত্তাকার লুপের উপর চৌম্বক বল",
                                 stars: 2,
                                 starStr: "★★",
                                 g: 2,
                                 gh: 2,
-                                boards: "ঢা. বো., সি. বো., মা. বো., দি. বো. ১৮; সি. বো. ১৭",
+                                boards: "ঢা. বো., সি. বো., রা. বো., দি. বো. ১৮; সি. বো. ১৭",
                             },
                             {
-                                name: "ভূ-চুম্বকত্ব",
+                                name: "ভূ-চুম্বকত্ব, পদার্থের চুম্বকত্ব ও বিভিন্ন রাশি",
                                 stars: 1,
                                 starStr: "★",
                                 g: 2,
                                 gh: 1,
-                                boards: "য. বো., মা. বো. ১৫",
+                                boards: "য. বো., রা. বো. ১৫",
                             },
                             {
                                 name: "হল ক্রিয়া",
@@ -1155,7 +1158,8 @@
                         ],
                     },
                     {
-                        chapter: "৫ম অধ্যায়: আবেশ ও পরিবর্তী প্রবাহ",
+                        chapter:
+                            "৫ম অধ্যায়: তাড়িতচৌম্বক আবেশ ও পরিবর্তী প্রবাহ",
                         topics: [
                             {
                                 name: "দিক পরিবর্তী প্রবাহ",
@@ -1163,23 +1167,23 @@
                                 starStr: "★★★",
                                 g: 13,
                                 gh: 14,
-                                boards: "চ. বো. ১৯, ১৭, ১৬, ১৫; ব. বো. ১৯, ১৭, ১৫; সি. বো. ১৯, ১৮, ১৬",
+                                boards: "চ. বো. ১৯, ১৭, ১৬, ১৫; য. বো. ১৫; সি. বো. ১৯, ১৮, ১৬; ঢা. বো. ১৮; ব. বো. ১৮, ১৭; দি. বো. ১৮, ১৫; রা. বো. ১৬",
                             },
                             {
-                                name: "তড়িৎ চৌম্বকীয় আবেশ",
+                                name: "তড়িৎ চৌম্বকীয় আবেশ ও চৌম্বক ফ্লাক্স",
                                 stars: 2,
                                 starStr: "★★",
                                 g: 2,
                                 gh: 1,
-                                boards: "সি. বো. ১৯; ব. বো. ১৫",
+                                boards: "সি. বো. ১৯; য. বো. ১৫",
                             },
                             {
-                                name: "স্বকীয় ও পারস্পরিক আবেশ",
+                                name: "স্বকীয় আবেশ ও পারস্পরিক আবেশ",
                                 stars: 1,
                                 starStr: "★",
                                 g: 2,
                                 gh: 2,
-                                boards: "দি. বো. ১৯; মা. বো. ১৭",
+                                boards: "সি. বো. ১৯; রা. বো. ১৭",
                             },
                         ],
                     },
@@ -1187,20 +1191,20 @@
                         chapter: "৬ষ্ঠ অধ্যায়: জ্যামিতিক আলোকবিজ্ঞান",
                         topics: [
                             {
-                                name: "লেন্স",
+                                name: "প্রিজম",
                                 stars: 3,
                                 starStr: "★★★",
                                 g: 18,
                                 gh: 17,
-                                boards: "ঢা. বো. ১৯, ১৫; চ. বো. ১৯, ১৮, ১৭, ১৬",
+                                boards: "ঢা. বো. ১৯, ১৫; চ. বো. ১৯, ১৮, ১৭, ১৬; সি. বো. ১৯; য. বো. ১৫; রা. বো. ১৯, ১৮, ১৭; কু. বো. ১৯, ১৮",
                             },
                             {
-                                name: "প্রিজম",
+                                name: "লেন্স",
                                 stars: 2,
                                 starStr: "★★",
                                 g: 8,
                                 gh: 8,
-                                boards: "ঢা. বো. ১৮, ১৭; সি. বো. ১৮, ১৫",
+                                boards: "ঢা. বো. ১৮, ১৭; সি. বো. ১৮, ১৫; য. বো. ১৮, ১৬; দি. বো. ১৮; ব. বো. ১৫",
                             },
                             {
                                 name: "অণুবীক্ষণ যন্ত্র",
@@ -1208,7 +1212,7 @@
                                 starStr: "★",
                                 g: 4,
                                 gh: 4,
-                                boards: "য. বো. ১৭; চ. বো. ১৬; দি. বো. ১৫",
+                                boards: "য. বো. ১৭; চ. বো. ১৬; দি. বো. ১৫; ঢা. বো., সি. বো. ১৬; সি. বো. ১৬",
                             },
                             {
                                 name: "দূরবীক্ষণ যন্ত্র",
@@ -1216,7 +1220,7 @@
                                 starStr: "★",
                                 g: 2,
                                 gh: 3,
-                                boards: "ঢা. বো. ১৯; য. বো. ১৭",
+                                boards: "ঢা. বো. ১৯; য. বো. ১৭; কু. বো. ১৫",
                             },
                         ],
                     },
@@ -1229,20 +1233,20 @@
                                 starStr: "★★★",
                                 g: 47,
                                 gh: 47,
-                                boards: "ঢা. বো. ২৫, ২৪, ২৩, ২২, ২১; মা. বো. ২৫, ২৩, ২২",
+                                boards: "ঢা. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৯, ১৮; রা. বো. ২৫, ২৩, ২২, ২১, ১৯, ১৬; ম. বো. ২৫, ২৩, ২২, ২১; চ. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৫; কু. বো. ২৪, ২৩, ২১, ১৯, ১৬; ব. বো. ২৫, ২৩, ২২, ২১, ১৮; সি. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৮; ব. বো. ২৫, ২৪, ২৩, ২১, ১৯, ১৬; দি. বো. ২৪, ২৩, ২২, ২১, ১৮",
                             },
                             {
-                                name: "গ্রেটিং ও অপবর্তন",
+                                name: "আলোর অপবর্তন ও গ্রেটিং",
                                 stars: 2,
                                 starStr: "★★",
                                 g: 8,
                                 gh: 13,
-                                boards: "ঢা. বো. ২২, ১৯; মা. বো. ২৪, ২২",
+                                boards: "ঢা. বো. ২২, ১৯; রা. বো. ২৪, ২২, ১৫; ম. বো. ২৪; কু. বো. ২২; য. বো. ২৪, ১৯; সি. বো. ১৭; ব. বো. ২২; দি. বো. ২৫, ২৪",
                             },
                         ],
                     },
                     {
-                        chapter: "৮ম অধ্যায়: আধুনিক পদার্থবিজ্ঞান",
+                        chapter: "৮ম অধ্যায়: আধুনিক পদার্থবিজ্ঞানের সূচনা",
                         topics: [
                             {
                                 name: "আপেক্ষিকতা",
@@ -1250,15 +1254,15 @@
                                 starStr: "★★★",
                                 g: 38,
                                 gh: 35,
-                                boards: "ঢা. বো. ২৫, ২৪, ২১, ১৭; মা. বো. ২৩, ২১",
+                                boards: "ঢা. বো. ২৫, ২৪, ২১, ১৭; রা. বো. ২৩, ২১, ১৭; য. বো. ২৫, ২২, ২১; চ. বো. ২৫, ২৩, ২১, ১৯, ১৭, ১৫; কু. বো. ২৪, ২২, ২১, ১৯; সি. বো. ২৫, ২৪, ২২, ২১, ১৬; ব. বো. ২৫, ২৪, ২২, ২১, ১৯, ১৫; দি. বো. ২৪, ২৩, ২১, ১৭, ১৬",
                             },
                             {
-                                name: "তড়িৎ ক্রিয়া ও ডি-ব্রগলি",
+                                name: "আলোক তড়িৎ ক্রিয়া ও ডি-ব্রগলি তরঙ্গ ও অন্যান্য",
                                 stars: 3,
                                 starStr: "★★★",
                                 g: 36,
                                 gh: 36,
-                                boards: "ঢা. বো. ২৫, ২৩, ২২, ১৫",
+                                boards: "ঢা. বো. ২৫, ২৩, ২২, ১৫; রা. বো. ২৫, ২৩, ২২, ১৯; ম. বো. ২৪, ২৩; চ. বো. ২৫, ২৪, ২২; কু. বো. ২৫, ২৩, ১৯, ১৬; য. বো. ২৫, ২৪, ২৩, ১৯; সি. বো. ২৫, ২৩, ১৫; ব. বো. ২৫, ২৪, ২২, ১৯, ১৫; ঢা. বো. ১৯; কু. বো. ১৫; ব. বো. ১৫; সি. বো. ১৭",
                             },
                             {
                                 name: "ভর-শক্তি সম্পর্ক",
@@ -1266,7 +1270,7 @@
                                 starStr: "★★",
                                 g: 5,
                                 gh: 7,
-                                boards: "ঢা. বো. ২৫, ১৭",
+                                boards: "ঢা. বো. ২৫, ১৭; চ. বো. ১৭; য. বো. ২৫; সি. বো. ২৪; ব. বো. ২৫, ২২, ১৯, ১৫; দি. বো. ২৫, ২৩",
                             },
                             {
                                 name: "এক্স-রে",
@@ -1279,7 +1283,8 @@
                         ],
                     },
                     {
-                        chapter: "৯ম অধ্যায়: নিউক্লিয়ার পদার্থবিজ্ঞান",
+                        chapter:
+                            "৯ম অধ্যায়: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান",
                         topics: [
                             {
                                 name: "তেজস্ক্রিয়তা",
@@ -1287,7 +1292,7 @@
                                 starStr: "★★★",
                                 g: 43,
                                 gh: 43,
-                                boards: "মা. বো. ২৫, ২৪, ২৩",
+                                boards: "রা. বো. ২৫, ২৪, ২৩, ২২, ১৭; ম. বো. ২৫, ২৪, ২৩; চ. বো. ২৫, ২৪, ২৩, ২২, ১৬, ১৫; য. বো. ২৫, ২৩, ২২, ১৯, ১৬; সি. বো. ২৫, ২৪, ২৩, ২২, ১৫; ব. বো. ২৫, ২৪, ২৩, ১৯, ১৭, ১৬; দি. বো. ২৫, ১৯, ১৭, ১৫; ঢা. বো. ২৪, ২২, ১৭, ১৫; কু. বো. ২৩, ২২, ১৭, ১৫",
                             },
                             {
                                 name: "নিউক্লিয়াসের গঠন",
@@ -1295,7 +1300,7 @@
                                 starStr: "★★★",
                                 g: 15,
                                 gh: 15,
-                                boards: "ঢা. বো. ২৫, ১৯",
+                                boards: "ঢা. বো. ২৫, ১৯, ১৬; কু. বো. ২৫; রা. বো. ১৯, ১৬; য. বো. ২৩, ২২; চ. বো. ২৪, ১৯; ব. বো. ২৪, ১৯; সি. বো. ১৯, ১৬; দি. বো. ২৪, ২২",
                             },
                             {
                                 name: "ভরত্রুটি ও বন্ধনশক্তি",
@@ -1303,7 +1308,7 @@
                                 starStr: "★★",
                                 g: 11,
                                 gh: 11,
-                                boards: "ঢা. বো. ২৩",
+                                boards: "ঢা. বো. ২৩; রা. বো. ১৮, ১৫; চ. বো. ১৮; কু. বো. ২৪, ২২, ১৯, ১৮; সি. বো. ১৭; ব. বো. ২২, ১৮; দি. বো. ২৩",
                             },
                             {
                                 name: "নিউক্লিয়ার বিক্রিয়া",
@@ -1311,7 +1316,7 @@
                                 starStr: "★",
                                 g: 2,
                                 gh: 2,
-                                boards: "চ. বো. ২৩",
+                                boards: "চ. বো. ২৩, ১৭; সি. বো. ১৭",
                             },
                         ],
                     },
@@ -1324,15 +1329,15 @@
                                 starStr: "★★★",
                                 g: 52,
                                 gh: 53,
-                                boards: "ঢা. বো. ২৫, ২৪, ২২, ২১",
+                                boards: "ঢা. বো. ২৫, ২৪, ২২, ২১, ১৭; রা. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৯, ১৭, ১৬, ১৫; ম. বো. ২৪, ২১; চ. বো. ২৪, ২৩, ২২, ২১, ১৯; কু. বো. ২৪, ২৩, ২১, ১৯, ১৫; সি. বো. ২৪, ২৩, ২২, ২১, ১৯, ১৭; ব. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৯; দি. বো. ২৫, ২৪, ২৩, ২২, ২১, ১৯, ১৬",
                             },
                             {
-                                name: "বুলিয়ান অ্যালজেবরা",
+                                name: "বুলিয়ান অ্যালজেবরা ও লজিক গেট",
                                 stars: 2,
                                 starStr: "★★",
                                 g: 14,
                                 gh: 14,
-                                boards: "ঢা. বো. ২৩, ২১",
+                                boards: "ঢা. বো. ২৩, ২১, ১৬; রা. বো. ২১; ম. বো. ২৫; চ. বো. ২৫, ২১, ১৬; কু. বো. ২৫, ১৭; ব. বো. ২১, ১৭; সি. বো. ২১; ব. বো. ২১",
                             },
                             {
                                 name: "অর্ধপরিবাহী ও ডায়োড",
@@ -1340,7 +1345,7 @@
                                 starStr: "★",
                                 g: 9,
                                 gh: 9,
-                                boards: "ঢা. বো. ২২",
+                                boards: "ঢা. বো. ২২; য. বো. ২৩, ২২; কু. বো. ২২, ১৫; সি. বো. ১৫; ব. বো. ১৫; দি. বো. ২১, ১৭",
                             },
                             {
                                 name: "সংখ্যা পদ্ধতি",
@@ -1357,7 +1362,8 @@
 
             let currentPaper = "paper1";
             let rawData = dataDB[currentPaper];
-            let overviewChartInstance = null;
+            let recentChartInstance = null;
+            let oldChartInstance = null;
             let chapterBarChartInstance = null;
             let currentChapterIndex = 0;
             let currentYearFilter = "all";
@@ -1423,57 +1429,135 @@
             }
 
             function calculateOverallStats() {
-                let totalG = 0;
-                let totalGh = 0;
+                let totalRecent = 0;
+                let totalOld = 0;
+
+                const chapterLabels = [];
+                const recentData = [];
+                const oldData = [];
+
+                // Sets for filtering (Using Bengali digits as they appear in data)
+                const recentSet = new Set(["২৫", "২৪", "২৩", "২২", "২১"]);
+                const oldSet = new Set(["১৯", "১৮", "১৭", "১৬", "১৫"]);
 
                 rawData.forEach((chapter) => {
+                    // Extract Chapter short name (e.g., "২য় অধ্যায়")
+                    const shortName = chapter.chapter.split(":")[0];
+                    chapterLabels.push(shortName);
+
+                    let chapterRecentCount = 0;
+                    let chapterOldCount = 0;
+
                     chapter.topics.forEach((topic) => {
-                        totalG += topic.g;
-                        totalGh += topic.gh;
+                        if (!topic.boards || topic.boards === "-") return;
+
+                        const parts = topic.boards.split(";");
+                        parts.forEach((part) => {
+                            const firstDigitIdx = part.search(/[০-৯0-9]/);
+                            if (firstDigitIdx !== -1) {
+                                const yearsStr = part.substring(firstDigitIdx);
+                                const years = yearsStr
+                                    .split(",")
+                                    .map((y) => y.trim());
+
+                                years.forEach((y) => {
+                                    // Clean the string just in case
+                                    const cleanY = y.replace(/[^\d০-৯]/g, "");
+                                    if (recentSet.has(cleanY)) {
+                                        chapterRecentCount++;
+                                    } else if (oldSet.has(cleanY)) {
+                                        chapterOldCount++;
+                                    }
+                                });
+                            }
+                        });
                     });
+
+                    recentData.push(chapterRecentCount);
+                    oldData.push(chapterOldCount);
+                    totalRecent += chapterRecentCount;
+                    totalOld += chapterOldCount;
                 });
 
-                document.getElementById("total-g-stat").innerText = totalG;
-                document.getElementById("total-gh-stat").innerText = totalGh;
+                // Update text elements
+                document.getElementById("total-recent-stat").innerText =
+                    totalRecent;
+                document.getElementById("total-old-stat").innerText = totalOld;
 
-                const ctx = document
-                    .getElementById("overviewChart")
-                    .getContext("2d");
+                // Color palette for chapters
+                const colors = [
+                    "#4f46e5",
+                    "#0ea5e9",
+                    "#14b8a6",
+                    "#84cc16",
+                    "#eab308",
+                    "#f97316",
+                    "#ef4444",
+                    "#ec4899",
+                    "#8b5cf6",
+                    "#64748b",
+                ];
 
-                if (overviewChartInstance) {
-                    overviewChartInstance.destroy();
-                }
+                // Destroy old charts if they exist
+                if (recentChartInstance) recentChartInstance.destroy();
+                if (oldChartInstance) oldChartInstance.destroy();
 
-                overviewChartInstance = new Chart(ctx, {
-                    type: "doughnut",
-                    data: {
-                        labels: [
-                            "'গ' প্রশ্ন (প্রয়োগ)",
-                            "'ঘ' প্রশ্ন (উচ্চতর দক্ষতা)",
-                        ],
-                        datasets: [
-                            {
-                                data: [totalG, totalGh],
-                                backgroundColor: ["#4f46e5", "#f59e0b"],
-                                borderWidth: 0,
-                                hoverOffset: 4,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom",
-                                labels: {
-                                    font: {
-                                        family: "'Noto Sans Bengali', sans-serif",
-                                    },
+                const commonOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                font: {
+                                    family: "'Noto Sans Bengali', sans-serif",
+                                    size: 11,
                                 },
+                                boxWidth: 12,
+                                padding: 15,
                             },
                         },
                     },
+                };
+
+                // Create Recent Era Chart
+                const ctxRecent = document
+                    .getElementById("recentEraChart")
+                    .getContext("2d");
+                recentChartInstance = new Chart(ctxRecent, {
+                    type: "doughnut",
+                    data: {
+                        labels: chapterLabels,
+                        datasets: [
+                            {
+                                data: recentData,
+                                backgroundColor: colors,
+                                borderWidth: 2,
+                                borderColor: "#ffffff",
+                            },
+                        ],
+                    },
+                    options: commonOptions,
+                });
+
+                // Create Old Era Chart
+                const ctxOld = document
+                    .getElementById("oldEraChart")
+                    .getContext("2d");
+                oldChartInstance = new Chart(ctxOld, {
+                    type: "doughnut",
+                    data: {
+                        labels: chapterLabels,
+                        datasets: [
+                            {
+                                data: oldData,
+                                backgroundColor: colors,
+                                borderWidth: 2,
+                                borderColor: "#ffffff",
+                            },
+                        ],
+                    },
+                    options: commonOptions,
                 });
             }
 
@@ -1558,14 +1642,22 @@
                                     maxRotation: 45,
                                     minRotation: 0,
                                     callback: function (value) {
-                                        const label = this.getLabelForValue(value);
-                                        const isMobile = window.innerWidth < 640;
+                                        const label =
+                                            this.getLabelForValue(value);
+                                        const isMobile =
+                                            window.innerWidth < 640;
                                         if (isMobile) {
                                             // মোবাইলে এক লাইনে দেখানোর জন্য ট্রাঙ্কেট করা
-                                            return label.length > 12 ? label.substring(0, 12) + "..." : label;
+                                            return label.length > 12
+                                                ? label.substring(0, 12) + "..."
+                                                : label;
                                         } else {
                                             // বড় স্ক্রিনে মাল্টি-লাইনে দেখানোর জন্য
-                                            return label.length > 16 ? (label.match(/.{1,16}(\s|$)/g) || label) : label;
+                                            return label.length > 16
+                                                ? label.match(
+                                                      /.{1,16}(\s|$)/g,
+                                                  ) || label
+                                                : label;
                                         }
                                     },
                                 },
