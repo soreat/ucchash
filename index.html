@@ -5,6 +5,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>উচ্ছ্বাস HSC পদার্থবিজ্ঞান - প্রশ্ন বিশ্লেষণ</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {}
+                }
+            }
+        </script>
+        <script>
+            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
             @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap");
@@ -16,8 +31,6 @@
             }
             body {
                 font-family: "Noto Sans Bengali", sans-serif;
-                background-color: #f8fafc;
-                color: #334155;
             }
 
             .chart-container {
@@ -34,6 +47,12 @@
                 box-shadow:
                     0 4px 6px -1px rgb(0 0 0 / 0.1),
                     0 2px 4px -2px rgb(0 0 0 / 0.1);
+                transition: background-color 0.3s ease, border-color 0.3s ease;
+            }
+
+            .dark .chart-container {
+                background-color: #1e293b; /* slate-800 */
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
             }
 
             @media (max-width: 640px) {
@@ -50,10 +69,17 @@
                 border: 2px solid #4f46e5;
             }
 
-            .paper-btn.active {
+            .dark .paper-btn {
+                background-color: #1e293b;
+                color: #818cf8;
+                border-color: #6366f1;
+            }
+
+            .paper-btn.active, .dark .paper-btn.active {
                 background-color: #4f46e5;
                 color: white;
                 box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4);
+                border-color: #4f46e5;
             }
 
             .tab-btn {
@@ -66,11 +92,22 @@
                 border-color: #4338ca;
             }
 
+            .dark .tab-btn.active {
+                background-color: #4f46e5;
+                border-color: #4f46e5;
+            }
+
             .star-filter-btn.active {
                 background-color: #fbbf24;
                 color: #78350f;
                 border-color: #fbbf24;
                 font-weight: bold;
+            }
+            
+            .dark .star-filter-btn.active {
+                background-color: #d97706; /* amber-600 */
+                color: #fffbeb;
+                border-color: #d97706;
             }
 
             .year-filter-btn {
@@ -82,34 +119,29 @@
             }
         </style>
     </head>
-    <body class="antialiased">
-        <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-50">
-            <div
-                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 flex flex-row flex-wrap justify-between items-center gap-2"
-            >
-                <h1
-                    class="text-2xl md:text-3xl font-bold tracking-tight whitespace-nowrap"
-                >
-                    <span
-                        class="text-4xl md:text-5xl inline"
-                        style="
-                            font-family: &quot;HooglyMJ Bold&quot;, sans-serif;
-                        "
-                    >
+    <body class="antialiased bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 transition-colors duration-300">
+        <header class="bg-indigo-600 dark:bg-slate-950 dark:border-b dark:border-slate-800 text-white shadow-lg sticky top-0 z-50 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-row flex-wrap justify-between items-center gap-2">
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tight whitespace-nowrap">
+                    <span class="text-4xl md:text-5xl inline" style="font-family: 'HooglyMJ Bold', sans-serif;">
                         D”Q¡vm
                     </span>
                     <span class="inline">PHYSICS</span>
                 </h1>
 
                 <div class="flex items-center gap-2">
-                    <div
-                        class="text-sm bg-indigo-800 px-3 py-1 rounded-full border border-indigo-400 hidden sm:block"
-                    >
+                    <div class="text-sm bg-indigo-800 dark:bg-indigo-900/50 px-3 py-1 rounded-full border border-indigo-400 dark:border-indigo-700 hidden sm:block">
                         এইচএসসি প্রস্তুতি
                     </div>
+                    
+                    <button id="theme-toggle" type="button" class="text-indigo-100 dark:text-amber-300 hover:bg-indigo-700 dark:hover:bg-slate-800 rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:focus:ring-slate-600">
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+
                     <button
                         onclick="scrollToNextSection()"
-                        class="bg-amber-400 hover:bg-amber-300 text-indigo-900 px-3 py-1 rounded-full text-sm font-bold shadow transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap"
+                        class="bg-amber-400 hover:bg-amber-300 dark:bg-amber-500 dark:hover:bg-amber-400 text-indigo-900 px-3 py-1.5 rounded-full text-sm font-bold shadow transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap"
                     >
                         🞃
                     </button>
@@ -118,10 +150,7 @@
         </header>
 
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-            <!-- Paper Selection -->
-            <div
-                class="flex justify-center gap-4 border-b border-slate-200 pb-8"
-            >
+            <div class="flex justify-center gap-4 border-b border-slate-200 dark:border-slate-700 pb-8 transition-colors">
                 <button
                     id="btn-paper1"
                     class="paper-btn active px-8 py-3 rounded-lg font-bold text-lg cursor-pointer"
@@ -138,16 +167,14 @@
                 </button>
             </div>
 
-            <section
-                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
-            >
+            <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8 transition-colors">
                 <h2
                     id="section-overview"
-                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2 scroll-mt-24"
+                    class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 border-b-2 border-indigo-100 dark:border-indigo-900/50 pb-2 scroll-mt-24"
                 >
                     সার্বিক প্রশ্ন বন্টন (Overview)
                 </h2>
-                <p class="text-slate-600 mb-6 text-lg leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 mb-6 text-lg leading-relaxed">
                     এই অংশে নির্বাচিত পত্রের সিলেবাসের উপর বিগত বছরগুলোতে আসা
                     সৃজনশীল প্রশ্নের অধ্যায়ভিত্তিক বন্টন দেখানো হয়েছে।
                     ২০২১-২০২৫ সালের শর্ট সিলেবাসের প্রশ্ন এবং এর পূর্ববর্তী ফুল
@@ -156,36 +183,24 @@
                 </p>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    <!-- Left Chart: 2021-2025 -->
-                    <div
-                        class="bg-indigo-50 p-6 rounded-lg border border-indigo-100 flex flex-col items-center shadow-sm"
-                    >
-                        <h3
-                            class="text-lg font-bold text-indigo-900 mb-1 text-center"
-                        >
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 p-6 rounded-lg border border-indigo-100 dark:border-indigo-800/50 flex flex-col items-center shadow-sm transition-colors">
+                        <h3 class="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-1 text-center">
                             শর্ট সিলেবাস (২০২১ - ২০২৫)
                         </h3>
-                        <p class="text-sm text-indigo-700 font-semibold mb-4">
+                        <p class="text-sm text-indigo-700 dark:text-indigo-400 font-semibold mb-4">
                             মোট বোর্ড প্রশ্ন:
-                            <span id="total-recent-stat" class="text-xl"
-                                >0</span
-                            >
+                            <span id="total-recent-stat" class="text-xl">0</span>
                         </p>
                         <div class="chart-container h-72 w-full !p-2">
                             <canvas id="recentEraChart"></canvas>
                         </div>
                     </div>
 
-                    <!-- Right Chart: Before 2021 -->
-                    <div
-                        class="bg-amber-50 p-6 rounded-lg border border-amber-100 flex flex-col items-center shadow-sm"
-                    >
-                        <h3
-                            class="text-lg font-bold text-amber-900 mb-1 text-center"
-                        >
+                    <div class="bg-amber-50 dark:bg-amber-700/10 p-6 rounded-lg border border-amber-100 dark:border-amber-600/30 flex flex-col items-center shadow-sm transition-colors">
+                        <h3 class="text-lg font-bold text-amber-900 dark:text-amber-300 mb-1 text-center">
                             ফুল সিলেবাসে (২০২০ এর পূর্বে)
                         </h3>
-                        <p class="text-sm text-amber-700 font-semibold mb-4">
+                        <p class="text-sm text-amber-700 dark:text-amber-400 font-semibold mb-4">
                             মোট বোর্ড প্রশ্ন:
                             <span id="total-old-stat" class="text-xl">0</span>
                         </p>
@@ -196,39 +211,31 @@
                 </div>
             </section>
 
-            <section
-                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
-            >
+            <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8 transition-colors">
                 <h2
                     id="section-chapter"
-                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2 scroll-mt-24"
+                    class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 border-b-2 border-indigo-100 dark:border-indigo-900/50 pb-2 scroll-mt-24"
                 >
                     অধ্যায়ভিত্তিক বিশ্লেষণ (Chapter Analysis)
                 </h2>
-                <p class="text-slate-600 mb-6 text-lg leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 mb-6 text-lg leading-relaxed">
                     নিচের বাটনগুলো থেকে যেকোনো একটি অধ্যায় নির্বাচন করুন।
                     গ্রাফের মাধ্যমে ওই অধ্যায়ের কোন টপিক থেকে সবচেয়ে বেশি
                     প্রশ্ন এসেছে তা দেখতে পাবেন। এছাড়া নিচের টেবিলে ওই
                     টপিকগুলোর বিস্তারিত বোর্ড ও সালের তথ্য দেওয়া আছে।
                 </p>
 
-                <!-- TOP CHAPTER BUTTONS -->
                 <div class="mb-6">
-                    <p
-                        class="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider"
-                    >
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
                         অধ্যায় নির্বাচন করুন:
                     </p>
                     <div class="flex flex-wrap gap-2" id="chapter-buttons">
-                        <!-- Buttons will be generated here -->
-                    </div>
+                        </div>
                 </div>
 
-                <div
-                    class="bg-slate-50 rounded-xl p-4 md:p-6 mb-8 border border-slate-200 shadow-inner"
-                >
+                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 md:p-6 mb-8 border border-slate-200 dark:border-slate-700 shadow-inner transition-colors">
                     <h3
-                        class="text-xl font-semibold text-center text-indigo-800 mb-4"
+                        class="text-xl font-semibold text-center text-indigo-800 dark:text-indigo-300 mb-4"
                         id="current-chapter-title"
                     >
                         অধ্যায়
@@ -238,237 +245,193 @@
                     </div>
                 </div>
 
-                <!-- BOTTOM CHAPTER BUTTONS -->
                 <div id="section-chapter-bottom" class="mb-6 scroll-mt-24">
-                    <p
-                        class="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider"
-                    >
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
                         অধ্যায় নির্বাচন করুন:
                     </p>
-                    <div
-                        class="flex flex-wrap gap-2"
-                        id="chapter-buttons-bottom"
-                    >
-                        <!-- Buttons will be generated here -->
-                    </div>
+                    <div class="flex flex-wrap gap-2" id="chapter-buttons-bottom">
+                        </div>
                 </div>
 
-                <div class="overflow-x-auto shadow-sm rounded-lg">
-                    <table
-                        class="min-w-full divide-y divide-slate-200 border border-slate-200 rounded-lg overflow-hidden"
-                    >
-                        <thead class="bg-slate-100">
+                <div class="overflow-x-auto shadow-sm rounded-lg border border-slate-200 dark:border-slate-700 transition-colors">
+                    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 overflow-hidden">
+                        <thead class="bg-slate-100 dark:bg-slate-700/50 transition-colors">
                             <tr>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                     টপিকের নাম
                                 </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                     গুরুত্ব
                                 </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                     'গ' প্রশ্ন
                                 </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                     'ঘ' প্রশ্ন
                                 </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                     <div class="flex flex-col gap-2">
                                         <span>বোর্ড ও সাল</span>
-                                        <div
-                                            class="flex flex-wrap gap-1"
-                                            id="year-filters"
-                                        >
-                                            <button
-                                                class="year-filter-btn active bg-indigo-600 text-white px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="all"
-                                            >
+                                        <div class="flex flex-wrap gap-1" id="year-filters">
+                                            <button class="year-filter-btn active bg-indigo-600 text-white px-2 py-1 rounded text-[10px] leading-none" data-year="all">
                                                 সব
                                             </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="২৫"
-                                            >
-                                                ২৫
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="২৪"
-                                            >
-                                                ২৪
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="২৩"
-                                            >
-                                                ২৩
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="২২"
-                                            >
-                                                ২২
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="২১"
-                                            >
-                                                ২১
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="১৯"
-                                            >
-                                                ১৯
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="১৮"
-                                            >
-                                                ১৮
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="১৭"
-                                            >
-                                                ১৭
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="১৬"
-                                            >
-                                                ১৬
-                                            </button>
-                                            <button
-                                                class="year-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2 py-1 rounded text-[10px] leading-none"
-                                                data-year="১৫"
-                                            >
-                                                ১৫
-                                            </button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="২৫">২৫</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="২৪">২৪</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="২৩">২৩</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="২২">২২</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="২১">২১</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="১৯">১৯</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="১৮">১৮</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="১৭">১৭</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="১৬">১৬</button>
+                                            <button class="year-filter-btn bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 px-2 py-1 rounded text-[10px] leading-none" data-year="১৫">১৫</button>
                                         </div>
                                     </div>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody
-                            class="bg-white divide-y divide-slate-200"
-                            id="chapter-table-body"
-                        ></tbody>
+                        <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700 transition-colors" id="chapter-table-body">
+                        </tbody>
                     </table>
                 </div>
             </section>
 
-            <section
-                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8"
-            >
+            <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8 transition-colors">
                 <h2
                     id="section-priority"
-                    class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-100 pb-2 scroll-mt-24"
+                    class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 border-b-2 border-indigo-100 dark:border-indigo-900/50 pb-2 scroll-mt-24"
                 >
                     গুরুত্ব অনুযায়ী টপিক (Priority Filter)
                 </h2>
-                <p class="text-slate-600 mb-6 text-lg leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 mb-6 text-lg leading-relaxed">
                     পরীক্ষার প্রস্তুতির জন্য সবচেয়ে গুরুত্বপূর্ণ টপিকগুলো খুঁজে
                     বের করতে নিচের স্টার রেটিং ফিল্টার ব্যবহার করুন। ৩-স্টার
                     টপিকগুলো পরীক্ষায় সবচেয়ে বেশিবার এসেছে।
                 </p>
 
                 <div class="flex flex-wrap gap-3 mb-6 justify-center">
-                    <button
-                        class="star-filter-btn active px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors"
-                        data-stars="all"
-                    >
+                    <button class="star-filter-btn active px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" data-stars="all">
                         সকল টপিক
                     </button>
-                    <button
-                        class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors"
-                        data-stars="3"
-                    >
+                    <button class="star-filter-btn px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" data-stars="3">
                         ★★★ (থ্রি স্টার)
                     </button>
-                    <button
-                        class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors"
-                        data-stars="2"
-                    >
+                    <button class="star-filter-btn px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" data-stars="2">
                         ★★ (টু স্টার)
                     </button>
-                    <button
-                        class="star-filter-btn px-4 py-2 border border-slate-300 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors"
-                        data-stars="1"
-                    >
+                    <button class="star-filter-btn px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" data-stars="1">
                         ★ (ওয়ান স্টার)
                     </button>
                 </div>
 
-                <div class="overflow-x-auto shadow-sm rounded-lg">
-                    <table
-                        class="min-w-full divide-y divide-slate-200 border border-slate-200"
-                    >
-                        <thead class="bg-slate-50">
+                <div class="overflow-x-auto shadow-sm rounded-lg border border-slate-200 dark:border-slate-700 transition-colors">
+                    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 transition-colors">
                             <tr>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
-                                    অধ্যায়
-                                </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
-                                    টপিকের নাম
-                                </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
-                                    গুরুত্ব
-                                </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-center text-xs font-medium text-slate-600 uppercase tracking-wider"
-                                >
-                                    মোট প্রশ্ন (গ+ঘ)
-                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">অধ্যায়</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">টপিকের নাম</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">গুরুত্ব</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">মোট প্রশ্ন (গ+ঘ)</th>
                             </tr>
                         </thead>
-                        <tbody
-                            class="bg-white divide-y divide-slate-200"
-                            id="filtered-topics-body"
-                        ></tbody>
+                        <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700 transition-colors" id="filtered-topics-body">
+                        </tbody>
                     </table>
                 </div>
 
-                <div
-                    id="no-results-msg"
-                    class="hide text-center py-10 bg-slate-50 rounded-lg border border-slate-200 mt-4 text-slate-500 font-medium"
-                >
+                <div id="no-results-msg" class="hide text-center py-10 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 mt-4 text-slate-500 dark:text-slate-400 font-medium transition-colors">
                     এই ক্যাটাগরিতে কোনো টপিক পাওয়া যায়নি।
                 </div>
             </section>
         </main>
 
-        <footer
-            class="bg-slate-800 text-slate-300 py-8 text-center mt-12 border-t-4 border-indigo-600"
-        >
+        <footer class="bg-slate-800 dark:bg-slate-950 text-slate-300 py-8 text-center mt-12 border-t-4 border-indigo-600 dark:border-indigo-900 transition-colors">
             <p class="text-sm">Ⓒ শরিয়াতুল্লাহ, BUET CE</p>
         </footer>
 
         <script>
+            // --- Dark Mode Initialization & Logic ---
+            const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+            const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+            // Change the icons inside the button based on previous settings
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+            } else {
+                themeToggleDarkIcon.classList.remove('hidden');
+            }
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+
+            themeToggleBtn.addEventListener('click', function() {
+                // toggle icons
+                themeToggleDarkIcon.classList.toggle('hidden');
+                themeToggleLightIcon.classList.toggle('hidden');
+
+                // if set via local storage previously
+                if (localStorage.getItem('color-theme')) {
+                    if (localStorage.getItem('color-theme') === 'light') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                        updateChartColors(true);
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                        updateChartColors(false);
+                    }
+                // if NOT set via local storage previously
+                } else {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                        updateChartColors(false);
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                        updateChartColors(true);
+                    }
+                }
+            });
+
+            // Update dynamically when theme changes
+            function updateChartColors(isDark) {
+                const textColor = isDark ? '#cbd5e1' : '#334155'; // #334155 is dark gray
+                const gridColor = isDark ? '#334155' : '#e2e8f0';
+                const doughnutBorder = isDark ? '#1e293b' : '#ffffff';
+
+                Chart.defaults.color = textColor;
+                Chart.defaults.borderColor = gridColor;
+                
+                // Update specific instances to apply new colors dynamically
+                if (recentChartInstance) {
+                    recentChartInstance.data.datasets[0].borderColor = doughnutBorder;
+                    if (recentChartInstance.options.plugins && recentChartInstance.options.plugins.legend) {
+                        recentChartInstance.options.plugins.legend.labels.color = textColor;
+                    }
+                    recentChartInstance.update();
+                }
+                if (oldChartInstance) {
+                    oldChartInstance.data.datasets[0].borderColor = doughnutBorder;
+                    if (oldChartInstance.options.plugins && oldChartInstance.options.plugins.legend) {
+                        oldChartInstance.options.plugins.legend.labels.color = textColor;
+                    }
+                    oldChartInstance.update();
+                }
+                if (chapterBarChartInstance) {
+                    chapterBarChartInstance.options.scales.y.grid.color = gridColor;
+                    chapterBarChartInstance.options.scales.x.grid.color = gridColor;
+                    // Update text colors for bar chart axes and legend
+                    chapterBarChartInstance.options.scales.y.ticks.color = textColor;
+                    chapterBarChartInstance.options.scales.x.ticks.color = textColor;
+                    if (chapterBarChartInstance.options.plugins && chapterBarChartInstance.options.plugins.legend) {
+                        chapterBarChartInstance.options.plugins.legend.labels.color = textColor;
+                    }
+                    chapterBarChartInstance.update();
+                }
+            }
+
+            // --- Database ---
             const dataDB = {
                 paper1: [
                     {
@@ -875,7 +838,7 @@
                                 starStr: "★★★",
                                 g: 6,
                                 gh: 8,
-                                boards: "ব. বো. ১৯, ১৭, ১৬, ১৫; সি. বো. ১৯, ১৬; সম্মিলিত বো. ১৮; রা. বো. ۱۵; চ. বো. ১৫",
+                                boards: "ব. বো. ১৯, ১৭, ১৬, ১৫; সি. বো. ১৯, ১৬; সম্মিলিত বো. ১৮; রা. বো. ১৫; চ. বো. ১৫",
                             },
                             {
                                 name: "তরঙ্গের বিভিন্ন রাশি",
@@ -967,7 +930,7 @@
                                 starStr: "★★★",
                                 g: 34,
                                 gh: 35,
-                                boards: "ঢা. বো. ২৫, ২২, ২১, ১৭, ১৫; কু. বো. ২৫, ২২, ১৭, ১৫; সি. বো. ২৫, ২৪, ২২; য. বো. ২৫, ২৪, ২২, ১৯, ১৫; রা. বো. ২৫, ২৪, ২১, ১৫; দি. বো. ২৫, ২৪, ১৭; ম. বো. ২৫, ২৪; চ. বো. ২৪, ২১, ১৭, ১৬, ১৫; ব. বো. ২২, ۱۵; সম্মিলিত বোর্ড ১৮",
+                                boards: "ঢা. বো. ২৫, ২২, ২১, ১৭, ১৫; কু. বো. ২৫, ২২, ১৭, ১৫; সি. বো. ২৫, ২৪, ২২; য. বো. ২৫, ২৪, ২২, ১৯, ১৫; রা. বো. ২৫, ২৪, ২১, ১৫; দি. বো. ২৫, ২৪, ১৭; ম. বো. ২৫, ২৪; চ. বো. ২৪, ২১, ১৭, ১৬, ১৫; ব. বো. ২২, ১৫; সম্মিলিত বোর্ড ১৮",
                             },
                             {
                                 name: "তাপগতিবিদ্যার ১ম সূত্র",
@@ -1306,7 +1269,7 @@
                     },
                     {
                         chapter:
-                            "৯ম অধ্যায়: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান",
+                            "৯ম অধ্যায়: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞানের",
                         topics: [
                             {
                                 name: "তেজস্ক্রিয়তা",
@@ -1391,6 +1354,10 @@
             let currentYearFilter = "all";
 
             function initApp() {
+                // Initialize default colors based on current theme before rendering charts
+                const isDark = document.documentElement.classList.contains('dark');
+                Chart.defaults.color = isDark ? '#cbd5e1' : '#334155'; // Darker gray for text
+                
                 updateDashboard();
                 setupFilterListeners();
                 setupYearFilters();
@@ -1405,15 +1372,13 @@
             ];
 
             function scrollToNextSection() {
-                const headerOffset = 70; // Approximation of fixed header height
-                let nextTargetId = scrollTargets[0]; // Default to the first section
+                const headerOffset = 70; 
+                let nextTargetId = scrollTargets[0]; 
 
-                // Find the first target that is currently below the viewport's top edge
                 for (let i = 0; i < scrollTargets.length; i++) {
                     const el = document.getElementById(scrollTargets[i]);
                     if (el) {
                         const rect = el.getBoundingClientRect();
-                        // If element is below the sticky header (plus a small buffer)
                         if (rect.top > headerOffset + 5) {
                             nextTargetId = scrollTargets[i];
                             break;
@@ -1439,7 +1404,6 @@
                 currentPaper = paperKey;
                 rawData = dataDB[currentPaper];
 
-                // Update Toggle Buttons UI
                 document
                     .getElementById("btn-paper1")
                     .classList.remove("active");
@@ -1450,7 +1414,6 @@
                     .getElementById(`btn-${paperKey}`)
                     .classList.add("active");
 
-                // Reset priority filters to 'all'
                 document
                     .querySelectorAll(".star-filter-btn")
                     .forEach((b) => b.classList.remove("active"));
@@ -1458,10 +1421,9 @@
                     .querySelector('.star-filter-btn[data-stars="all"]')
                     .classList.add("active");
 
-                // Reset year filters to 'all'
                 document.querySelectorAll(".year-filter-btn").forEach((b) => {
                     b.classList.remove("active", "bg-indigo-600", "text-white");
-                    b.classList.add("bg-slate-200", "text-slate-700");
+                    b.classList.add("bg-slate-200", "text-slate-700", "dark:bg-slate-700", "dark:text-slate-300");
                 });
                 const allYearBtn = document.querySelector(
                     '.year-filter-btn[data-year="all"]',
@@ -1470,6 +1432,8 @@
                     allYearBtn.classList.remove(
                         "bg-slate-200",
                         "text-slate-700",
+                        "dark:bg-slate-700", 
+                        "dark:text-slate-300"
                     );
                     allYearBtn.classList.add(
                         "active",
@@ -1497,12 +1461,10 @@
                 const recentData = [];
                 const oldData = [];
 
-                // Sets for filtering (Using Bengali digits as they appear in data)
                 const recentSet = new Set(["২৫", "২৪", "২৩", "২২", "২১"]);
                 const oldSet = new Set(["১৯", "১৮", "১৭", "১৬", "১৫"]);
 
                 rawData.forEach((chapter) => {
-                    // Extract Chapter short name (e.g., "২য় অধ্যায়")
                     const shortName = chapter.chapter.split(":")[0];
                     chapterLabels.push(shortName);
 
@@ -1522,7 +1484,6 @@
                                     .map((y) => y.trim());
 
                                 years.forEach((y) => {
-                                    // Clean the string just in case
                                     const cleanY = y.replace(/[^\d০-৯]/g, "");
                                     if (recentSet.has(cleanY)) {
                                         chapterRecentCount++;
@@ -1540,12 +1501,10 @@
                     totalOld += chapterOldCount;
                 });
 
-                // Update text elements
                 document.getElementById("total-recent-stat").innerText =
                     totalRecent;
                 document.getElementById("total-old-stat").innerText = totalOld;
 
-                // Color palette for chapters
                 const colors = [
                     "#4f46e5",
                     "#0ea5e9",
@@ -1559,7 +1518,6 @@
                     "#64748b",
                 ];
 
-                // Destroy old charts if they exist
                 if (recentChartInstance) recentChartInstance.destroy();
                 if (oldChartInstance) oldChartInstance.destroy();
 
@@ -1576,12 +1534,12 @@
                                 },
                                 boxWidth: 12,
                                 padding: 15,
+                                lineWidth: 0 // Removes black border around legend color boxes
                             },
                         },
                     },
                 };
 
-                // Create Recent Era Chart
                 const ctxRecent = document
                     .getElementById("recentEraChart")
                     .getContext("2d");
@@ -1594,14 +1552,13 @@
                                 data: recentData,
                                 backgroundColor: colors,
                                 borderWidth: 2,
-                                borderColor: "#ffffff",
+                                borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
                             },
                         ],
                     },
                     options: commonOptions,
                 });
 
-                // Create Old Era Chart
                 const ctxOld = document
                     .getElementById("oldEraChart")
                     .getContext("2d");
@@ -1614,7 +1571,7 @@
                                 data: oldData,
                                 backgroundColor: colors,
                                 borderWidth: 2,
-                                borderColor: "#ffffff",
+                                borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
                             },
                         ],
                     },
@@ -1634,16 +1591,14 @@
                 rawData.forEach((chapter, index) => {
                     const shortName = chapter.chapter.split(":")[0];
 
-                    // Create top button
                     const btnTop = document.createElement("button");
-                    btnTop.className = `tab-btn tab-btn-${index} px-4 py-2 border border-slate-300 rounded-full text-sm font-medium ${index === 0 ? "active" : "text-slate-600 hover:bg-slate-100"}`;
+                    btnTop.className = `tab-btn tab-btn-${index} px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-full text-sm font-medium ${index === 0 ? "active" : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"}`;
                     btnTop.innerText = shortName;
                     btnTop.onclick = () => handleChapterClick(index);
                     containerTop.appendChild(btnTop);
 
-                    // Create bottom button
                     const btnBottom = document.createElement("button");
-                    btnBottom.className = `tab-btn tab-btn-${index} px-4 py-2 border border-slate-300 rounded-full text-sm font-medium ${index === 0 ? "active" : "text-slate-600 hover:bg-slate-100"}`;
+                    btnBottom.className = `tab-btn tab-btn-${index} px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-full text-sm font-medium ${index === 0 ? "active" : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"}`;
                     btnBottom.innerText = shortName;
                     btnBottom.onclick = () => handleChapterClick(index);
                     containerBottom.appendChild(btnBottom);
@@ -1651,16 +1606,14 @@
             }
 
             function handleChapterClick(index) {
-                // Remove active class from all buttons in both groups
                 document.querySelectorAll(".tab-btn").forEach((b) => {
                     b.classList.remove("active");
-                    b.classList.add("text-slate-600", "hover:bg-slate-100");
+                    b.classList.add("text-slate-600", "dark:text-slate-300", "hover:bg-slate-100", "dark:hover:bg-slate-700");
                 });
 
-                // Add active class to the selected chapter's buttons in both groups
                 document.querySelectorAll(`.tab-btn-${index}`).forEach((b) => {
                     b.classList.add("active");
-                    b.classList.remove("text-slate-600", "hover:bg-slate-100");
+                    b.classList.remove("text-slate-600", "dark:text-slate-300", "hover:bg-slate-100", "dark:hover:bg-slate-700");
                 });
 
                 loadChapterData(index);
@@ -1693,12 +1646,14 @@
                                 data: gData,
                                 backgroundColor: "#6366f1",
                                 borderRadius: 4,
+                                borderWidth: 0
                             },
                             {
                                 label: "'ঘ' প্রশ্ন",
                                 data: ghData,
                                 backgroundColor: "#fbbf24",
                                 borderRadius: 4,
+                                borderWidth: 0
                             },
                         ],
                     },
@@ -1708,7 +1663,9 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                grid: { color: "#e2e8f0" },
+                                grid: { 
+                                    color: document.documentElement.classList.contains('dark') ? '#334155' : '#e2e8f0' 
+                                },
                             },
                             x: {
                                 grid: { display: false },
@@ -1725,12 +1682,10 @@
                                         const isMobile =
                                             window.innerWidth < 640;
                                         if (isMobile) {
-                                            // মোবাইলে এক লাইনে দেখানোর জন্য ট্রাঙ্কেট করা
                                             return label.length > 12
                                                 ? label.substring(0, 12) + "..."
                                                 : label;
                                         } else {
-                                            // বড় স্ক্রিনে মাল্টি-লাইনে দেখানোর জন্য
                                             return label.length > 16
                                                 ? label.match(
                                                       /.{1,16}(\s|$)/g,
@@ -1748,6 +1703,7 @@
                                     font: {
                                         family: "'Noto Sans Bengali', sans-serif",
                                     },
+                                    lineWidth: 0 // Removes border from bar chart legend boxes
                                 },
                             },
                             tooltip: {
@@ -1764,7 +1720,6 @@
                 renderChapterTable();
             }
 
-            // Logic to extract relevant boards for the selected year
             function filterBoardString(boardString, targetYear) {
                 if (targetYear === "all" || !boardString || boardString === "-")
                     return boardString;
@@ -1774,7 +1729,6 @@
 
                 for (let part of parts) {
                     part = part.trim();
-                    // Find index of first digit to split Board Name and Years
                     const firstDigitIdx = part.search(/[0-9০-৯]/);
 
                     if (firstDigitIdx !== -1) {
@@ -1782,10 +1736,8 @@
                             .substring(0, firstDigitIdx)
                             .trim();
                         const yearsStr = part.substring(firstDigitIdx);
-                        // Split the comma separated years
                         const years = yearsStr.split(",").map((y) => y.trim());
 
-                        // If the target year exists in the array of years for this board
                         if (years.includes(targetYear)) {
                             result.push(boardName + " " + targetYear);
                         }
@@ -1806,13 +1758,13 @@
                     );
 
                     const tr = document.createElement("tr");
-                    tr.className = "hover:bg-slate-50 transition-colors";
+                    tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors";
                     tr.innerHTML = `
-                    <td class="px-6 py-4 text-sm font-medium text-slate-900">${topic.name}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-slate-900 dark:text-slate-100">${topic.name}</td>
                     <td class="px-6 py-4 text-center text-sm text-amber-500 text-lg">${topic.starStr}</td>
-                    <td class="px-6 py-4 text-center text-sm text-slate-600 font-semibold">${topic.g}</td>
-                    <td class="px-6 py-4 text-center text-sm text-slate-600 font-semibold">${topic.gh}</td>
-                    <td class="px-6 py-4 text-sm ${filteredBoards === "-" ? "text-slate-300" : "text-slate-500"} font-medium whitespace-normal min-w-[200px] leading-relaxed">${filteredBoards}</td>
+                    <td class="px-6 py-4 text-center text-sm text-slate-600 dark:text-slate-300 font-semibold">${topic.g}</td>
+                    <td class="px-6 py-4 text-center text-sm text-slate-600 dark:text-slate-300 font-semibold">${topic.gh}</td>
+                    <td class="px-6 py-4 text-sm ${filteredBoards === "-" ? "text-slate-300 dark:text-slate-600" : "text-slate-500 dark:text-slate-400"} font-medium whitespace-normal min-w-[200px] leading-relaxed">${filteredBoards}</td>
                 `;
                     tbody.appendChild(tr);
                 });
@@ -1821,7 +1773,6 @@
             function setupYearFilters() {
                 document.querySelectorAll(".year-filter-btn").forEach((btn) => {
                     btn.addEventListener("click", (e) => {
-                        // Update active state
                         document
                             .querySelectorAll(".year-filter-btn")
                             .forEach((b) => {
@@ -1833,6 +1784,8 @@
                                 b.classList.add(
                                     "bg-slate-200",
                                     "text-slate-700",
+                                    "dark:bg-slate-700",
+                                    "dark:text-slate-300"
                                 );
                             });
 
@@ -1840,6 +1793,8 @@
                         target.classList.remove(
                             "bg-slate-200",
                             "text-slate-700",
+                            "dark:bg-slate-700",
+                            "dark:text-slate-300"
                         );
                         target.classList.add(
                             "active",
@@ -1847,7 +1802,6 @@
                             "text-white",
                         );
 
-                        // Get data-year attribute and render table again
                         currentYearFilter = target.dataset.year;
                         renderChapterTable();
                     });
@@ -1882,12 +1836,12 @@
                             const totalQ = topic.g + topic.gh;
                             const tr = document.createElement("tr");
                             tr.className =
-                                "hover:bg-slate-50 transition-colors";
+                                "hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors";
                             tr.innerHTML = `
-                            <td class="px-6 py-4 text-sm text-slate-600 font-medium">${chapter.chapter.split(":")[0]}</td>
-                            <td class="px-6 py-4 text-sm text-slate-900 font-semibold">${topic.name}</td>
+                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300 font-medium">${chapter.chapter.split(":")[0]}</td>
+                            <td class="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 font-semibold">${topic.name}</td>
                             <td class="px-6 py-4 text-center text-sm text-amber-500 text-lg">${topic.starStr}</td>
-                            <td class="px-6 py-4 text-center text-sm text-indigo-600 font-bold">${totalQ}</td>
+                            <td class="px-6 py-4 text-center text-sm text-indigo-600 dark:text-indigo-400 font-bold">${totalQ}</td>
                         `;
                             tbody.appendChild(tr);
                         }
@@ -1903,78 +1857,7 @@
                 }
             }
 
-            // Initialize App on load
             window.onload = initApp;
         </script>
     </body>
 </html>
-
-<!-- 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Md. Soreatullah</title>
-        <style>
-            body,
-            html {
-                margin: 0;
-                height: 100%;
-                overflow: hidden;
-            }
-
-            .iframe-container {
-                position: relative;
-                width: 100%;
-                height: 100vh;
-            }
-
-            iframe {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                border: none;
-            }
-
-            /* Cover only the right half of the top bar */
-            .top-bar-cover {
-                position: absolute;
-                top: 0;
-                right: 0; /* start from right edge */
-                width: 55%; /* covers the right half only */
-                height: 40px; /* adjust until it perfectly hides Notion’s top bar */
-                background-color: #191919;
-                z-index: 10;
-            }
-
-            /* Optional: bottom bar if you still want it */
-            .bottom-bar-cover {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 50px;
-                background-color: black;
-                z-index: 10;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="iframe-container">
-            <iframe
-                src="https://ucchashphysics.notion.site/ebd/2927a4bc45fa80e7a2b8e16ff803d09b"
-                
-                allowfullscreen
-            ></iframe>
-
-            
-            <div class="top-bar-cover"></div>
-
-            
-            <div class="bottom-bar-cover"></div>
-        </div>
-    </body>
-</html> -->
